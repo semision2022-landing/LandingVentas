@@ -21,6 +21,16 @@ const config: Config = {
           brand: "#579601",
         },
       },
+      keyframes: {
+        wave: {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "25%": { transform: "translateY(-4px) rotate(-1deg)" },
+          "75%": { transform: "translateY(4px) rotate(1deg)" },
+        },
+      },
+      animation: {
+        "wave": "wave 4s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

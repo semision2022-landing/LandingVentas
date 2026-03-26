@@ -54,7 +54,7 @@ const jsonLd = {
       name: 'e-Misión',
       legalName: 'Nodexum S.A.S.',
       url: 'https://landing.emision.co',
-      logo: 'https://landing.emision.co/logo.png',
+      logo: 'https://landing.emision.co/logo.svg',
       contactPoint: {
         '@type': 'ContactPoint',
         telephone: '+57-604-590-3572',

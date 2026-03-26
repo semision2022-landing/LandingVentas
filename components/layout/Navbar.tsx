@@ -34,13 +34,10 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group" aria-label="e-Misión inicio">
-          <Image
-            src="/logo.png"
+          <img
+            src="/logo.svg"
             alt="e-Misión logo"
-            width={320}
-            height={90}
-            priority
-            className="w-auto h-14 sm:h-16 lg:h-[72px] transition-transform group-hover:scale-105"
+            className="w-auto h-14 sm:h-16 lg:h-[72px] animate-wave-logo"
           />
         </a>
 

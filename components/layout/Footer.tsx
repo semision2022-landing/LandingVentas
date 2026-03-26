@@ -56,12 +56,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <Image
-                src="/logo.png"
+              <img
+                src="/logo.svg"
                 alt="e-Misión logo"
-                width={220}
-                height={60}
-                className="w-auto h-14"
+                className="w-auto h-12 animate-wave-logo-center"
               />
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">
