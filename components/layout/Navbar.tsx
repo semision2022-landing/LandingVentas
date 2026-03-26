@@ -31,16 +31,16 @@ export default function Navbar() {
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
       }}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group" aria-label="e-Misión inicio">
           <Image
             src="/logo.png"
             alt="e-Misión logo"
-            width={220}
-            height={60}
+            width={320}
+            height={90}
             priority
-            className="w-auto h-12 lg:h-14 transition-transform group-hover:scale-105"
+            className="w-auto h-14 sm:h-16 lg:h-[72px] transition-transform group-hover:scale-105"
           />
         </a>
 
