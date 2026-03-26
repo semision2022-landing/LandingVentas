@@ -84,12 +84,14 @@ const jsonLd = {
     {
       '@type': 'FAQPage',
       mainEntity: [
-        { '@type': 'Question', name: '¿Qué documentos necesito para habilitarme ante la DIAN?', acceptedAnswer: { '@type': 'Answer', text: 'RUT actualizado, resolución de facturación electrónica y copia de la cédula del representante legal o persona natural.' } },
-        { '@type': 'Question', name: '¿En cuánto tiempo me habilitan ante la DIAN?', acceptedAnswer: { '@type': 'Answer', text: 'En 48 horas hábiles después de recibir los documentos completos. Los planes de $500 en adelante incluyen la habilitación gratis.' } },
-        { '@type': 'Question', name: '¿La plataforma funciona en el celular?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, es 100% en la nube y funciona en cualquier dispositivo sin necesidad de instalación.' } },
-        { '@type': 'Question', name: '¿Qué pasa si se me acaban los documentos del plan?', acceptedAnswer: { '@type': 'Answer', text: 'Puedes adquirir documentos adicionales o cambiar a un plan de mayor capacidad cuando lo necesites.' } },
-        { '@type': 'Question', name: '¿El soporte técnico tiene costo adicional?', acceptedAnswer: { '@type': 'Answer', text: 'No, el soporte técnico está incluido en todos los planes de forma gratuita en horario laboral.' } },
-        { '@type': 'Question', name: '¿Puedo emitir notas crédito y débito?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, todos los planes incluyen facturas electrónicas, notas crédito, notas débito, notas de ajuste y documento soporte.' } },
+        { '@type': 'Question', name: '¿Qué documentos necesito para adquirir el producto?', acceptedAnswer: { '@type': 'Answer', text: 'Rut actualizado en formato PDF. Soporte de pago. Cédula del representante legal. Resolución expedida por la DIAN, según el tipo de documento.' } },
+        { '@type': 'Question', name: '¿Cuánto tiempo se demora para activar el producto?', acceptedAnswer: { '@type': 'Answer', text: 'El producto se demora 48 horas hábiles, una vez se realice el pago.' } },
+        { '@type': 'Question', name: '¿Cuáles son los métodos de pago?', acceptedAnswer: { '@type': 'Answer', text: 'Transferencia a través del botón Bancolombia, tarjetas débito y crédito, Nequi, PSE, consignación bancaria.' } },
+        { '@type': 'Question', name: '¿Cuál es el horario de atención de soporte técnico?', acceptedAnswer: { '@type': 'Answer', text: 'Lunes a viernes de 7:30 a.m. a 6:30 p.m. Sábados 8:00 a.m. a 2:00 p.m.' } },
+        { '@type': 'Question', name: '¿Cómo funciona la integración? Y ¿Cuál es su costo?', acceptedAnswer: { '@type': 'Answer', text: 'Se envía documentación técnica con el paso a paso y ejemplos de JSON, acompañamiento con el área técnica, y no tiene ningún costo.' } },
+        { '@type': 'Question', name: '¿Cómo es la capacitación y entrega de las herramientas?', acceptedAnswer: { '@type': 'Answer', text: 'Manejamos videotutoriales y capacitaciones grupales vía Teams. Una vez habilitados ante la DIAN, y en caso de requerirse una capacitación personalizada se puede solicitar con anticipación.' } },
+        { '@type': 'Question', name: '¿El servicio tiene alguna cláusula de permanencia mínima?', acceptedAnswer: { '@type': 'Answer', text: 'No tenemos cláusula de permanencia.' } },
+        { '@type': 'Question', name: '¿Cuáles son los estándares de seguridad de la información de las herramientas?', acceptedAnswer: { '@type': 'Answer', text: 'Contamos con la certificación ISO27001 y trabajamos con respaldo con Oracle Cloud para el almacenamiento de los documentos.' } },
       ],
     },
     {

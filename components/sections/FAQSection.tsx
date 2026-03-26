@@ -6,28 +6,36 @@ import { Plus, Minus } from 'lucide-react'
 
 const faqs = [
   {
-    q: '¿Qué documentos necesito para habilitarme ante la DIAN?',
-    a: 'RUT actualizado, resolución de facturación electrónica y copia de la cédula del representante legal o persona natural.',
+    q: '¿Qué documentos necesito para adquirir el producto?',
+    a: 'Rut actualizado en formato PDF. Soporte de pago. Cédula del representante legal. Resolución expedida por la DIAN, según el tipo de documento.',
   },
   {
-    q: '¿En cuánto tiempo me habilitan ante la DIAN?',
-    a: 'En 48 horas hábiles después de recibir los documentos completos. Los planes de $500 en adelante incluyen la habilitación gratis.',
+    q: '¿Cuánto tiempo se demora para activar el producto?',
+    a: 'El producto se demora 48 horas hábiles, una vez se realice el pago.',
   },
   {
-    q: '¿La plataforma funciona en el celular?',
-    a: 'Sí, es 100% en la nube y funciona en cualquier dispositivo sin necesidad de instalación.',
+    q: '¿Cuáles son los métodos de pago?',
+    a: 'Transferencia a través del botón Bancolombia, tarjetas débito y crédito, Nequi, PSE, consignación bancaria.',
   },
   {
-    q: '¿Qué pasa si se me acaban los documentos del plan?',
-    a: 'Puedes adquirir documentos adicionales o cambiar a un plan de mayor capacidad cuando lo necesites.',
+    q: '¿Cuál es el horario de atención de soporte técnico?',
+    a: 'Lunes a viernes de 7:30 a.m. a 6:30 p.m. Sábados 8:00 a.m. a 2:00 p.m.',
   },
   {
-    q: '¿El soporte técnico tiene costo adicional?',
-    a: 'No, el soporte técnico está incluido en todos los planes de forma gratuita en horario laboral.',
+    q: '¿Cómo funciona la integración? Y ¿Cuál es su costo?',
+    a: 'Se envía documentación técnica con el paso a paso y ejemplos de JSON, acompañamiento con el área técnica, y no tiene ningún costo.',
   },
   {
-    q: '¿Puedo emitir notas crédito y débito?',
-    a: 'Sí, todos los planes incluyen facturas electrónicas, notas crédito, notas débito, notas de ajuste y documento soporte.',
+    q: '¿Cómo es la capacitación y entrega de las herramientas?',
+    a: 'Manejamos videotutoriales y capacitaciones grupales vía Teams. Una vez habilitados ante la DIAN, y en caso de requerirse una capacitación personalizada se puede solicitar con anticipación.',
+  },
+  {
+    q: '¿El servicio tiene alguna cláusula de permanencia mínima?',
+    a: 'No tenemos cláusula de permanencia.',
+  },
+  {
+    q: '¿Cuáles son los estándares de seguridad de la información de las herramientas?',
+    a: 'Contamos con la certificación ISO27001 y trabajamos con respaldo con Oracle Cloud para el almacenamiento de los documentos.',
   },
 ]
 
