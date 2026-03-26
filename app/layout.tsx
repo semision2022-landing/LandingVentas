@@ -32,8 +32,17 @@ export const metadata: Metadata = {
     description: 'Emite facturas electrónicas desde $120.000/año. Avalado por la DIAN.',
     images: ['/og-image.jpg'],
   },
-  alternates: { canonical: 'https://landing.emision.co' },
+  alternates: { canonical: 'https://ventas.emision.co' },
   robots: { index: true, follow: true },
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/icon.png',
+  },
 }
 
 const jsonLd = {
