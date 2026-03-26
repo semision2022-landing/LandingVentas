@@ -1,27 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #18224C;
+  --navy-light: #1B3A5C;
+  --cyan: #00D0FF;
+  --purple: #5F4EDA;
+  --green: #579601;
+  --white: #FFFFFF;
+  --gray: #64748B;
+  --gray-light: #F1F5F9;
+  --gray-border: #E2E8F0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--navy);
+    background-color: var(--white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all duration-200;
+    background-color: var(--navy);
+  }
+  .btn-primary:hover {
+    background-color: var(--navy-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(24, 34, 76, 0.3);
+  }
+
+  .btn-cyan {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+    background-color: var(--cyan);
+    color: var(--navy);
+  }
+  .btn-cyan:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 208, 255, 0.4);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 border-2;
+    border-color: var(--white);
+    color: var(--white);
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background-color: var(--white);
+    color: var(--navy);
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold;
+    color: var(--navy);
+  }
+
+  .section-subtitle {
+    @apply text-lg mt-4;
+    color: var(--gray);
+  }
+
+  .card {
+    @apply bg-white rounded-2xl p-6 transition-all duration-300;
+    border: 1px solid var(--gray-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .card:hover {
+    box-shadow: 0 10px 40px rgba(24, 34, 76, 0.12);
+    transform: translateY(-3px);
+  }
+
+  .gradient-navy {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-navy { color: var(--navy); }
+  .text-cyan { color: var(--cyan); }
+  .text-purple { color: var(--purple); }
+  .text-green-brand { color: var(--green); }
+  .bg-navy { background-color: var(--navy); }
+  .bg-navy-light { background-color: var(--navy-light); }
+  .bg-cyan { background-color: var(--cyan); }
+  .border-cyan { border-color: var(--cyan); }
+  .border-navy { border-color: var(--navy); }
+
+  .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: #f1f5f9; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 4px; }
 }
+
+/* Chat widget animations */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--navy);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* Three dots loading animation */
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.dot-1 { animation: bounce-dot 1.2s infinite 0s; }
+.dot-2 { animation: bounce-dot 1.2s infinite 0.2s; }
+.dot-3 { animation: bounce-dot 1.2s infinite 0.4s; }
+
+/* ─── PayZen Krypton Embedded Form — Premium Styling ─── */
+
+/* Container */
+.kr-embedded,
+.kr-smart-form {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Labels */
+.kr-embedded .kr-field-wrapper label,
+.kr-embedded .kr-label,
+.kr-embedded label {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  color: var(--navy) !important;
+  margin-bottom: 6px !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Input fields */
+.kr-embedded .kr-input-field,
+.kr-embedded input[type="text"],
+.kr-embedded input[type="tel"],
+.kr-embedded input[type="number"],
+.kr-embedded .kr-field-wrapper input {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.875rem !important;
+  color: var(--navy) !important;
+  background-color: #FAFBFC !important;
+  border: 1.5px solid var(--gray-border) !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.kr-embedded .kr-input-field:focus,
+.kr-embedded input:focus,
+.kr-embedded .kr-field-wrapper input:focus {
+  border-color: var(--navy) !important;
+  background-color: #fff !important;
+  box-shadow: 0 0 0 3px rgba(24, 34, 76, 0.08) !important;
+}
+
+/* Select / dropdown */
+.kr-embedded select,
+.kr-embedded .kr-field-wrapper select {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.875rem !important;
+  color: var(--navy) !important;
+  background-color: #FAFBFC !important;
+  border: 1.5px solid var(--gray-border) !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2318224C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 16px !important;
+  padding-right: 36px !important;
+}
+
+.kr-embedded select:focus {
+  border-color: var(--navy) !important;
+  background-color: #fff !important;
+  box-shadow: 0 0 0 3px rgba(24, 34, 76, 0.08) !important;
+}
+
+/* Submit / Pay button */
+.kr-embedded .kr-payment-button,
+.kr-embedded button[type="submit"],
+.kr-embedded .kr-form-submit {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.9375rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 14px 24px !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  box-shadow: 0 4px 15px rgba(24, 34, 76, 0.25) !important;
+  margin-top: 8px !important;
+}
+
+.kr-embedded .kr-payment-button:hover,
+.kr-embedded button[type="submit"]:hover,
+.kr-embedded .kr-form-submit:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 25px rgba(24, 34, 76, 0.35) !important;
+}
+
+.kr-embedded .kr-payment-button:active,
+.kr-embedded button[type="submit"]:active,
+.kr-embedded .kr-form-submit:active {
+  transform: translateY(0) !important;
+}
+
+/* Field wrappers — spacing */
+.kr-embedded .kr-field-wrapper,
+.kr-embedded .kr-pan,
+.kr-embedded .kr-expiry,
+.kr-embedded .kr-security-code {
+  margin-bottom: 12px !important;
+}
+
+/* Error messages */
+.kr-embedded .kr-field-error,
+.kr-embedded .kr-form-error {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.75rem !important;
+  color: #DC2626 !important;
+  margin-top: 4px !important;
+  padding: 4px 0 !important;
+}
+
+/* Card brand icons */
+.kr-embedded .kr-icon {
+  opacity: 0.7 !important;
+}
+
+/* Remove any default Krypton borders or shadows on the container */
+.kr-embedded .kr-smart-form,
+.kr-embedded .kr-embedded-wrapper {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Payment form wrapper inside modal */
+.kr-embedded .kr-smart-form-wrapper {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Horizontal field groups (expiry + CVV side by side) */
+.kr-embedded .kr-field-group {
+  display: flex !important;
+  gap: 12px !important;
+}
+
+.kr-embedded .kr-field-group > * {
+  flex: 1 !important;
+}
+
+/* Placeholder text */
+.kr-embedded input::placeholder {
+  color: #94A3B8 !important;
+  font-weight: 400 !important;
+}
+
+/* Focus ring animation */
+@keyframes kr-focus-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(24, 34, 76, 0.15); }
+  70% { box-shadow: 0 0 0 4px rgba(24, 34, 76, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(24, 34, 76, 0); }
+}
+

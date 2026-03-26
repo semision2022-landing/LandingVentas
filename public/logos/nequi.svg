@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <rect width="200" height="60" rx="8" fill="#7B2D8B"/>
+  <text x="100" y="38" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">nequi</text>
+  <circle cx="28" cy="30" r="14" fill="#00D4B8"/>
+  <text x="28" y="36" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="800" fill="#7B2D8B" text-anchor="middle">N</text>
+</svg>

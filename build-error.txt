@@ -1,0 +1,33 @@
+
+> emision-landing@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./app/layout.tsx
+113:9  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+Error: Missing API key. Pass it to the constructor `new Resend("re_123")`
+    at new <anonymous> (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:5:28073)
+    at 42738 (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:5:27609)
+    at t (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\webpack-runtime.js:1:128)
+    at r (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:45:1034)
+    at C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:45:1069
+    at t.X (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\webpack-runtime.js:1:1206)
+    at C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:45:1047
+    at Object.<anonymous> (C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\.next\server\app\api\payments\payzen\create-order\route.js:45:1097)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+
+> Build error occurred
+Error: Failed to collect page data for /api/payments/payzen/create-order
+    at C:\Users\Cristhian S\.gemini\antigravity\scratch\emision-landing\node_modules\next\dist\build\utils.js:1269:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  type: 'Error'
+}
