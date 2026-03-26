@@ -59,7 +59,7 @@ export default function Footer() {
               <img
                 src="/logo.svg"
                 alt="e-Misión logo"
-                className="w-auto h-12 animate-wave-logo-center"
+                className="w-auto h-12 animate-wave-logo"
               />
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">
