@@ -10,7 +10,7 @@ const footerLinks = {
   ],
   legal: [
     { label: 'Política de protección de datos', href: '/politica-proteccion-datos.pdf', download: true },
-    { label: 'Términos y condiciones', href: '/terminos' },
+    { label: 'Términos y condiciones', href: '/terminos-y-condiciones.pdf', download: true },
     { label: 'Política de devoluciones', href: '/devoluciones' },
   ],
 }
