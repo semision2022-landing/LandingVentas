@@ -1,4 +1,4 @@
-import Image from 'next/image'
+
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 
 const footerLinks = {
