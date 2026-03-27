@@ -64,6 +64,13 @@ export default function ChatWidget() {
     }
   }, [isOpen])
 
+  // Open widget when navbar "Chatbot" is clicked
+  useEffect(() => {
+    const handler = () => setIsOpen(true)
+    window.addEventListener('openChat', handler)
+    return () => window.removeEventListener('openChat', handler)
+  }, [])
+
   // ─── Realtime: escuchar mensajes del agente y cambios de estado ──────────────
   useEffect(() => {
     if (!conversationId) return

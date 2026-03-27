@@ -8,7 +8,6 @@ import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 const navLinks = [
   { label: 'Servicios', href: '#servicios' },
   { label: 'Planes', href: '#planes' },
-  { label: 'Chatbot', href: '#chatbot' },
   { label: 'Contacto', href: '#contacto' },
 ]
 
@@ -57,6 +56,16 @@ export default function Navbar() {
                 />
               </a>
             ))}
+            <button
+              onClick={() => window.dispatchEvent(new Event('openChat'))}
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors relative group"
+            >
+              Chatbot
+              <span
+                className="absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+                style={{ backgroundColor: 'var(--cyan)' }}
+              />
+            </button>
           </div>
 
           {/* CTA Desktop */}
@@ -103,6 +112,12 @@ export default function Navbar() {
                   {link.label}
                 </a>
               ))}
+              <button
+                onClick={() => { setMenuOpen(false); window.dispatchEvent(new Event('openChat')) }}
+                className="text-white/80 font-medium hover:text-white transition-colors text-left"
+              >
+                Chatbot
+              </button>
               <button
                 onClick={() => { setMenuOpen(false); setWaModalOpen(true) }}
                 className="text-white/80 font-medium hover:text-white transition-colors text-left"
