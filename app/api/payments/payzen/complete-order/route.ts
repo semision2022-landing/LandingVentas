@@ -31,6 +31,18 @@ export async function POST(req: NextRequest) {
       .update({ payment_status: 'paid' })
       .eq('id', orderId)
 
+    // Register sale in admin sales table
+    await supabase.from('sales').upsert({
+      order_id: orderId,
+      plan_name: order.plan_name ?? 'Sin nombre',
+      plan_price: order.plan_price ?? 0,
+      customer_name: order.customer_name ?? '',
+      customer_email: order.customer_email ?? '',
+      customer_phone: order.customer_phone ?? null,
+      customer_nit: order.customer_nit ?? null,
+      status: 'completed',
+    }, { onConflict: 'order_id' })
+
     // Create order in WooCommerce if product ID exists
     if (order.wc_product_id) {
       try {
