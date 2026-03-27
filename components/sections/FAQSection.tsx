@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
 import { fbEvent, generateEventId } from '@/lib/fbq'
+import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 
 const faqs = [
   {
@@ -92,6 +93,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [waModalOpen, setWaModalOpen] = useState(false)
 
   return (
     <section className="py-20 bg-white">
@@ -113,16 +115,13 @@ export default function FAQSection() {
             transition={{ delay: 0.1 }}
           >
             ¿Tienes más dudas? Escríbenos al{' '}
-            <a
-              href="https://wa.me/573044796885"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fbEvent('Contact', { content_name: 'WhatsApp FAQ' }, generateEventId())}
-              style={{ color: 'var(--navy)' }}
+            <button
+              onClick={() => { fbEvent('Contact', { content_name: 'WhatsApp FAQ' }, generateEventId()); setWaModalOpen(true) }}
               className="font-semibold hover:underline"
+              style={{ color: 'var(--navy)' }}
             >
               WhatsApp
-            </a>
+            </button>
           </motion.p>
         </div>
 
@@ -138,6 +137,7 @@ export default function FAQSection() {
           ))}
         </div>
       </div>
+      <WhatsAppLeadModal isOpen={waModalOpen} onClose={() => setWaModalOpen(false)} />
     </section>
   )
 }

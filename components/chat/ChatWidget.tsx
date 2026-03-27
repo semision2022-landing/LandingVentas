@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, MessageCircle } from 'lucide-react'
+import { X, Send, MessageCircle, User, Mail, Phone, ChevronDown } from 'lucide-react'
 import ChatMessage from './ChatMessage'
 import QuickReplies from './QuickReplies'
 import { createClient } from '@/lib/supabase'
@@ -24,8 +24,19 @@ function generateSessionId() {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 }
 
+const PLANS = [
+  'Plan 25', 'Plan 100', 'Plan 150', 'Plan 500', 'Plan 1000', 'Plan 2500',
+  'Plan X', 'Plan XM', 'Plan XL',
+  'Plan Estándar (Integral)', 'Plan Plus (Integral)', 'Plan Premium (Integral)',
+  'No sé aún',
+]
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
+  const [preChatDone, setPreChatDone] = useState(false)
+  const [leadForm, setLeadForm] = useState({ name: '', email: '', phone: '', plan: '' })
+  const [leadErrors, setLeadErrors] = useState<{ name?: string; email?: string; phone?: string }>({})
+  const [leadLoading, setLeadLoading] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: GREETING, id: 'greeting' },
   ])
@@ -54,17 +65,21 @@ export default function ChatWidget() {
   }, [isOpen])
 
   // Initialize conversation in Supabase
-  const initConversation = useCallback(async () => {
-    if (conversationId) return
+  const initConversation = useCallback(async (lead?: { name: string; email: string; phone: string; plan: string }) => {
+    if (conversationId) return conversationId
     try {
       const supabase = createClient()
-      const { data } = await supabase
-        .from('conversations')
-        .insert({ session_id: sessionId, status: 'bot' })
-        .select('id')
-        .single()
-      if (data) setConversationId(data.id)
+      const insert: Record<string, string> = { session_id: sessionId, status: 'bot' }
+      if (lead) {
+        if (lead.name) insert.visitor_name = lead.name
+        if (lead.email) insert.visitor_email = lead.email.toLowerCase()
+        if (lead.phone) insert.visitor_phone = lead.phone
+        if (lead.plan && lead.plan !== 'No sé aún') insert.plan_interest = lead.plan
+      }
+      const { data } = await supabase.from('conversations').insert(insert).select('id').single()
+      if (data) { setConversationId(data.id); return data.id }
     } catch { /* silent */ }
+    return null
   }, [sessionId, conversationId])
 
   // Save message to Supabase
@@ -135,6 +150,22 @@ export default function ChatWidget() {
     }
   }, [isLoading, messages, isOpen, sessionId, initConversation, saveMessage])
 
+  // Validate and submit pre-chat form
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const errs: typeof leadErrors = {}
+    if (!leadForm.name.trim()) errs.name = 'Requerido'
+    if (!leadForm.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadForm.email)) errs.email = 'Email inválido'
+    if (!leadForm.phone.trim() || leadForm.phone.replace(/\D/g, '').length < 7) errs.phone = 'Teléfono inválido'
+    if (Object.keys(errs).length > 0) { setLeadErrors(errs); return }
+    setLeadLoading(true)
+    await initConversation(leadForm)
+    fbEvent('Contact', { content_name: 'Chatbot Pre-chat Form' }, generateEventId())
+    setPreChatDone(true)
+    setLeadLoading(false)
+    setTimeout(() => inputRef.current?.focus(), 300)
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -194,46 +225,129 @@ export default function ChatWidget() {
               </button>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto scrollbar-thin px-4 pt-4 pb-2">
-              {messages.map((msg) => (
-                <ChatMessage key={msg.id} role={msg.role} content={msg.content} />
-              ))}
-              {isLoading && <ChatMessage role="assistant" content="" isLoading />}
-              <div ref={bottomRef} />
-            </div>
+            {/* Pre-chat form OR chat messages */}
+            {!preChatDone ? (
+              <form onSubmit={handleLeadSubmit} className="flex-1 overflow-y-auto px-4 pt-4 pb-3 flex flex-col gap-3">
+                <p className="text-xs text-center mb-1" style={{ color: '#64748B' }}>
+                  Antes de comenzar, cuéntanos un poco sobre ti 😊
+                </p>
 
-            {/* Quick replies */}
-            <QuickReplies onSelect={sendMessage} visible={showQuickReplies && messages.length <= 2} />
+                {/* Name */}
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#18224C' }}>Nombre *</label>
+                  <div className="relative">
+                    <User size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }} />
+                    <input type="text" value={leadForm.name}
+                      onChange={(e) => { setLeadForm(f => ({ ...f, name: e.target.value })); setLeadErrors(er => ({ ...er, name: undefined })) }}
+                      placeholder="Tu nombre completo"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl text-xs border outline-none"
+                      style={{ borderColor: leadErrors.name ? '#EF4444' : '#E2E8F0', color: '#18224C' }}
+                    />
+                  </div>
+                  {leadErrors.name && <p className="text-[10px] mt-0.5" style={{ color: '#EF4444' }}>{leadErrors.name}</p>}
+                </div>
 
-            {/* Input */}
-            <div
-              className="px-3 py-3 border-t shrink-0 flex gap-2 items-center"
-              style={{ borderColor: 'var(--gray-border)' }}
-            >
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Escribe tu mensaje..."
-                className="flex-1 px-3.5 py-2.5 rounded-xl text-sm outline-none border transition-all"
-                style={{ borderColor: 'var(--gray-border)', color: 'var(--navy)' }}
-                onFocus={(e) => (e.target.style.borderColor = 'var(--navy)')}
-                onBlur={(e) => (e.target.style.borderColor = 'var(--gray-border)')}
-                disabled={isLoading}
-              />
-              <button
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || isLoading}
-                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 disabled:opacity-40 hover:-translate-y-0.5 active:translate-y-0"
-                style={{ backgroundColor: '#F97316', color: 'white' }}
-                aria-label="Enviar mensaje"
-              >
-                <Send size={16} />
-              </button>
-            </div>
+                {/* Email */}
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#18224C' }}>Correo *</label>
+                  <div className="relative">
+                    <Mail size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }} />
+                    <input type="email" value={leadForm.email}
+                      onChange={(e) => { setLeadForm(f => ({ ...f, email: e.target.value })); setLeadErrors(er => ({ ...er, email: undefined })) }}
+                      placeholder="tu@empresa.com"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl text-xs border outline-none"
+                      style={{ borderColor: leadErrors.email ? '#EF4444' : '#E2E8F0', color: '#18224C' }}
+                    />
+                  </div>
+                  {leadErrors.email && <p className="text-[10px] mt-0.5" style={{ color: '#EF4444' }}>{leadErrors.email}</p>}
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#18224C' }}>Teléfono *</label>
+                  <div className="relative">
+                    <Phone size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }} />
+                    <input type="tel" value={leadForm.phone}
+                      onChange={(e) => { setLeadForm(f => ({ ...f, phone: e.target.value })); setLeadErrors(er => ({ ...er, phone: undefined })) }}
+                      placeholder="3001234567"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl text-xs border outline-none"
+                      style={{ borderColor: leadErrors.phone ? '#EF4444' : '#E2E8F0', color: '#18224C' }}
+                    />
+                  </div>
+                  {leadErrors.phone && <p className="text-[10px] mt-0.5" style={{ color: '#EF4444' }}>{leadErrors.phone}</p>}
+                </div>
+
+                {/* Plan */}
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#18224C' }}>¿Qué plan te interesa?</label>
+                  <div className="relative">
+                    <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#94A3B8' }} />
+                    <select value={leadForm.plan} onChange={(e) => setLeadForm(f => ({ ...f, plan: e.target.value }))}
+                      className="w-full pl-3 pr-8 py-2 rounded-xl text-xs border outline-none appearance-none"
+                      style={{ borderColor: '#E2E8F0', color: leadForm.plan ? '#18224C' : '#94A3B8', backgroundColor: 'white' }}>
+                      <option value="">Seleccionar (opcional)</option>
+                      {PLANS.map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" disabled={leadLoading}
+                  className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white disabled:opacity-60 transition-all hover:-translate-y-0.5 mt-1"
+                  style={{ backgroundColor: '#18224C' }}>
+                  {leadLoading
+                    ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    : <><MessageCircle size={13} /> Empezar conversación</>}
+                </button>
+
+                <p className="text-center text-[10px]" style={{ color: '#94A3B8' }}>
+                  🔒 Datos confidenciales
+                </p>
+              </form>
+            ) : (
+              <>
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto scrollbar-thin px-4 pt-4 pb-2">
+                  {messages.map((msg) => (
+                    <ChatMessage key={msg.id} role={msg.role} content={msg.content} />
+                  ))}
+                  {isLoading && <ChatMessage role="assistant" content="" isLoading />}
+                  <div ref={bottomRef} />
+                </div>
+
+                {/* Quick replies */}
+                <QuickReplies onSelect={sendMessage} visible={showQuickReplies && messages.length <= 2} />
+
+                {/* Input */}
+                <div
+                  className="px-3 py-3 border-t shrink-0 flex gap-2 items-center"
+                  style={{ borderColor: 'var(--gray-border)' }}
+                >
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Escribe tu mensaje..."
+                    className="flex-1 px-3.5 py-2.5 rounded-xl text-sm outline-none border transition-all"
+                    style={{ borderColor: 'var(--gray-border)', color: 'var(--navy)' }}
+                    onFocus={(e) => (e.target.style.borderColor = 'var(--navy)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'var(--gray-border)')}
+                    disabled={isLoading}
+                  />
+                  <button
+                    onClick={() => sendMessage(input)}
+                    disabled={!input.trim() || isLoading}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 disabled:opacity-40 hover:-translate-y-0.5 active:translate-y-0"
+                    style={{ backgroundColor: '#F97316', color: 'white' }}
+                    aria-label="Enviar mensaje"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+              </>
+            )}
+
           </motion.div>
         )}
       </AnimatePresence>

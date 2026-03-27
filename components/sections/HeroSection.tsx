@@ -2,7 +2,8 @@
 
 import { motion, Variants } from 'framer-motion'
 import { ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react'
-import { fbEvent, generateEventId } from '@/lib/fbq'
+import { useState } from 'react'
+import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -18,6 +19,7 @@ const itemVariants: Variants = {
 }
 
 export default function HeroSection() {
+  const [waModalOpen, setWaModalOpen] = useState(false)
   return (
     <section
       className="relative overflow-hidden py-24 md:py-32"
@@ -94,16 +96,13 @@ export default function HeroSection() {
               Ver planes y precios
               <ArrowRight size={18} />
             </a>
-            <a
-              href="https://wa.me/573044796885"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fbEvent('Contact', { content_name: 'WhatsApp Hero' }, generateEventId())}
+            <button
+              onClick={() => setWaModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-semibold text-base text-white border-2 border-white/30 transition-all duration-200 hover:-translate-y-1"
             >
               <MessageCircle size={18} />
               Hablar por WhatsApp
-            </a>
+            </button>
           </motion.div>
 
           {/* Trust indicators */}
@@ -149,6 +148,7 @@ export default function HeroSection() {
           </div>
         </motion.div>
       </div>
+      <WhatsAppLeadModal isOpen={waModalOpen} onClose={() => setWaModalOpen(false)} />
     </section>
   )
 }
