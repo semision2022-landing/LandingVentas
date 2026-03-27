@@ -6,6 +6,7 @@ import { X, Send, MessageCircle } from 'lucide-react'
 import ChatMessage from './ChatMessage'
 import QuickReplies from './QuickReplies'
 import { createClient } from '@/lib/supabase'
+import { fbEvent, generateEventId } from '@/lib/fbq'
 
 interface Message {
   role: 'assistant' | 'user' | 'agent'
@@ -35,6 +36,7 @@ export default function ChatWidget() {
   const [sessionId] = useState(() => generateSessionId())
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [isTransferred, setIsTransferred] = useState(false)
+  const [hasTrackedContact, setHasTrackedContact] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -82,6 +84,12 @@ export default function ChatWidget() {
     const userMsg: Message = { role: 'user', content: text, id: generateId() }
     setMessages((prev) => [...prev, userMsg])
     setIsLoading(true)
+
+    // Contact event on first user message (once per session)
+    if (!hasTrackedContact) {
+      fbEvent('Contact', { content_name: 'Chatbot Laura' }, generateEventId())
+      setHasTrackedContact(true)
+    }
 
     // Init conversation on first user message
     await initConversation()
@@ -231,12 +239,40 @@ export default function ChatWidget() {
       </AnimatePresence>
 
       {/* Toggle button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
-        style={{ backgroundColor: 'var(--navy)' }}
-        aria-label={isOpen ? 'Cerrar chat' : 'Abrir chat con Laura'}
-      >
+      <div className="relative flex flex-col items-end gap-2">
+        {/* Speech bubble CTA */}
+        {!isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 1.5, duration: 0.4, ease: 'easeOut' }}
+            className="relative mr-1 px-4 py-2.5 rounded-2xl rounded-br-none shadow-lg max-w-[220px] text-right"
+            style={{ backgroundColor: 'white', border: '1px solid var(--gray-border)' }}
+          >
+            <p className="text-xs font-semibold leading-snug" style={{ color: 'var(--navy)' }}>
+              💬 ¿Preguntas sobre planes?
+            </p>
+            <p className="text-xs leading-snug mt-0.5" style={{ color: 'var(--gray)' }}>
+              ¡Laura te asesora ahora!
+            </p>
+            {/* Triangle pointer */}
+            <span
+              className="absolute -bottom-2 right-4 w-0 h-0"
+              style={{
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: '8px solid white',
+              }}
+            />
+          </motion.div>
+        )}
+
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
+          style={{ backgroundColor: 'var(--navy)' }}
+          aria-label={isOpen ? 'Cerrar chat' : 'Abrir chat con Laura'}
+        >
         {/* Pulse ring */}
         {!isOpen && (
           <span className="absolute inset-0 rounded-full animate-ping opacity-30" style={{ backgroundColor: 'var(--navy)' }} />
@@ -277,7 +313,8 @@ export default function ChatWidget() {
             {unread}
           </motion.span>
         )}
-      </button>
+        </button>
+      </div>
     </div>
   )
 }

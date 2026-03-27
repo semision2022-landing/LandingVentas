@@ -2,6 +2,7 @@
 
 import { motion, Variants } from 'framer-motion'
 import { ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react'
+import { fbEvent, generateEventId } from '@/lib/fbq'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -97,6 +98,7 @@ export default function HeroSection() {
               href="https://wa.me/573044796885"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => fbEvent('Contact', { content_name: 'WhatsApp Hero' }, generateEventId())}
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-semibold text-base text-white border-2 border-white/30 transition-all duration-200 hover:-translate-y-1"
             >
               <MessageCircle size={18} />

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
+import { fbEvent, generateEventId } from '@/lib/fbq'
 
 const faqs = [
   {
@@ -112,7 +113,14 @@ export default function FAQSection() {
             transition={{ delay: 0.1 }}
           >
             ¿Tienes más dudas? Escríbenos al{' '}
-            <a href="https://wa.me/573044796885" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--navy)' }} className="font-semibold hover:underline">
+            <a
+              href="https://wa.me/573044796885"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fbEvent('Contact', { content_name: 'WhatsApp FAQ' }, generateEventId())}
+              style={{ color: 'var(--navy)' }}
+              className="font-semibold hover:underline"
+            >
               WhatsApp
             </a>
           </motion.p>

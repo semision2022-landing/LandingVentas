@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
+import { fbEvent, generateEventId } from '@/lib/fbq'
 
 const navLinks = [
   { label: 'Servicios', href: '#servicios' },
@@ -64,6 +65,7 @@ export default function Navbar() {
             href="https://wa.me/573044796885"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => fbEvent('Contact', { content_name: 'WhatsApp Navbar' }, generateEventId())}
             className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             WhatsApp
