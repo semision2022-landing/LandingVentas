@@ -272,11 +272,13 @@ export default function ChatWidget() {
               className="flex items-center gap-3 px-4 py-3.5 shrink-0"
               style={{ backgroundColor: 'var(--navy)' }}
             >
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
-                style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-              >
-                LC
+              <div className="relative shrink-0">
+                <img
+                  src="/laura-avatar.png"
+                  alt="Laura"
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20"
+                />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 ring-2 ring-[#18224C]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-white leading-tight">Laura · Asesora e-Misión</p>
