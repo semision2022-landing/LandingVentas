@@ -64,6 +64,63 @@ export default function ChatWidget() {
     }
   }, [isOpen])
 
+  // ─── Realtime: escuchar mensajes del agente y cambios de estado ──────────────
+  useEffect(() => {
+    if (!conversationId) return
+    const supabase = createClient()
+
+    // 1. Nuevos mensajes del agente
+    const msgChannel = supabase
+      .channel(`widget-msgs-${conversationId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `conversation_id=eq.${conversationId}`,
+      }, (payload) => {
+        const row = payload.new as { id: string; role: string; content: string }
+        if (row.role === 'agent') {
+          setMessages((prev) => {
+            // Avoid duplicates
+            if (prev.some((m) => m.id === row.id)) return prev
+            return [...prev, { role: 'agent' as const, content: row.content, id: row.id }]
+          })
+          setIsOpen((open) => { if (!open) setUnread((n) => n + 1); return open })
+        }
+      })
+      .subscribe()
+
+    // 2. Cambio de estado: bot → with_agent
+    const convChannel = supabase
+      .channel(`widget-conv-${conversationId}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'conversations',
+        filter: `id=eq.${conversationId}`,
+      }, (payload) => {
+        const updated = payload.new as { status: string; assigned_agent?: string }
+        if (updated.status === 'with_agent') {
+          setIsTransferred(true)
+          const agentName = updated.assigned_agent ?? 'un asesor'
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant' as const,
+              content: `✅ ¡Conectado! ${agentName} de e-Misión está aquí para ayudarte. Puedes escribirle directamente.`,
+              id: `connected-${Date.now()}`,
+            },
+          ])
+        }
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(msgChannel)
+      supabase.removeChannel(convChannel)
+    }
+  }, [conversationId])
+
   // Initialize conversation in Supabase
   const initConversation = useCallback(async (lead?: { name: string; email: string; phone: string; plan: string }) => {
     if (conversationId) return conversationId
@@ -129,11 +186,24 @@ export default function ChatWidget() {
       const isTransfer = reply.includes('[TRANSFER]')
       const cleanReply = reply.replace('[TRANSFER]', '').trim()
 
-      const botRole: 'assistant' | 'agent' = isTransfer ? 'agent' : 'assistant'
+      const botRole: 'assistant' | 'agent' = 'assistant'
       const botMsg: Message = { role: botRole, content: cleanReply, id: generateId() }
       setMessages((prev) => [...prev, botMsg])
 
-      if (isTransfer) setIsTransferred(true)
+      if (isTransfer) {
+        setIsTransferred(true)
+        // Show transfer pending message after bot reply
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant' as const,
+              content: '⏳ Conectando con un asesor humano... En breve te atenderán.',
+              id: `transfer-pending-${Date.now()}`,
+            },
+          ])
+        }, 800)
+      }
 
       // Save to Supabase
       await saveMessage('user', text)
