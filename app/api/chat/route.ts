@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: 'claude-3-5-sonnet-latest',
       max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages: messages.map((m: { role: string; content: string }) => ({
