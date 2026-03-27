@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
+// Validate API key at module load time so the error is obvious in logs
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.error('[chat/route] ANTHROPIC_API_KEY is not set. Set it in .env.local (dev) and in your hosting environment variables (prod).')
+}
+
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const SYSTEM_PROMPT = `
@@ -58,6 +63,11 @@ Si piden asesor fuera de horario, pide su nombre y email para contactarlos.
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('[chat/route] ANTHROPIC_API_KEY faltante — configura la variable de entorno en Vercel/servidor.')
+      return NextResponse.json({ error: 'API key de Claude no configurada. Contacta al administrador.' }, { status: 500 })
+    }
+
     const { messages } = await req.json()
 
     if (!messages || !Array.isArray(messages)) {
@@ -65,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await client.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5',
       max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages: messages.map((m: { role: string; content: string }) => ({

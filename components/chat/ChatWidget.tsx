@@ -96,7 +96,11 @@ export default function ChatWidget() {
         }),
       })
 
-      if (!res.ok) throw new Error('Error en el servidor')
+      if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({ error: 'Sin cuerpo de respuesta' }))
+        console.error('[ChatWidget] Error API /api/chat:', res.status, errorBody)
+        throw new Error(errorBody.error || 'Error en el servidor')
+      }
       const { reply } = await res.json()
 
       const isTransfer = reply.includes('[TRANSFER]')
