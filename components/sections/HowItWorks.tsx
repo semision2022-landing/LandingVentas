@@ -1,127 +1,113 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { MousePointer, CreditCard, Zap } from 'lucide-react'
+import { MousePointer, CreditCard, Zap, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const steps = [
   {
     number: '01',
     icon: MousePointer,
     title: 'Elige tu plan',
-    description: 'Selecciona el plan ideal para el volumen de facturas de tu empresa. Más de 80 opciones disponibles.',
+    description:
+      'Selecciona el plan ideal para el volumen de facturas de tu empresa. Más de 80 opciones disponibles.',
     color: '#00D0FF',
     bg: 'rgba(0,208,255,0.12)',
-    glow: 'rgba(0,208,255,0.35)',
+    glow: '0 0 60px rgba(0,208,255,0.30), 0 20px 40px rgba(0,208,255,0.15)',
+    emoji: '🎯',
   },
   {
     number: '02',
     icon: CreditCard,
     title: 'Paga en línea',
-    description: 'Pago 100 % seguro con PayZen. Tarjeta de crédito, débito o transferencia bancaria.',
+    description:
+      'Pago 100% seguro con PayZen. Tarjeta de crédito, débito o transferencia bancaria.',
     color: '#5F4EDA',
     bg: 'rgba(95,78,218,0.12)',
-    glow: 'rgba(95,78,218,0.35)',
+    glow: '0 0 60px rgba(95,78,218,0.30), 0 20px 40px rgba(95,78,218,0.15)',
+    emoji: '💳',
   },
   {
     number: '03',
     icon: Zap,
     title: 'Empieza a facturar',
-    description: 'Habilitación ante la DIAN en 48 horas hábiles. Soporte técnico permanente incluido.',
+    description:
+      'Habilitación ante la DIAN en 48 horas hábiles. Soporte técnico permanente incluido.',
     color: '#579601',
     bg: 'rgba(87,150,1,0.12)',
-    glow: 'rgba(87,150,1,0.35)',
+    glow: '0 0 60px rgba(87,150,1,0.30), 0 20px 40px rgba(87,150,1,0.15)',
+    emoji: '⚡',
   },
 ]
 
-const TOTAL = steps.length
-const ANGLE_STEP = 360 / TOTAL   // 120°
-const RADIUS = 240               // px - desktop
-const RADIUS_SM = 150            // px - mobile
-
 export default function HowItWorks() {
-  const [rotation, setRotation] = useState(0)         // current wheel rotation in degrees
-  const [active, setActive] = useState(0)             // index of front card
-  const [dragging, setDragging] = useState(false)
-  const [radius, setRadius] = useState(RADIUS)
-  const dragStart = useRef<number | null>(null)
-  const lastRotation = useRef(0)
+  const [active, setActive] = useState(0)
+  const dragStartX = useRef<number | null>(null)
 
-  // Responsive radius
-  useEffect(() => {
-    const update = () => setRadius(window.innerWidth < 640 ? RADIUS_SM : RADIUS)
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
+  const prev = () => setActive((a) => (a - 1 + steps.length) % steps.length)
+  const next = () => setActive((a) => (a + 1) % steps.length)
 
-  // Snap rotation to nearest step
-  const snapToNearest = useCallback((rot: number) => {
-    let closest = 0
-    let minDiff = Infinity
-    for (let i = 0; i < TOTAL; i++) {
-      const cardAngle = (ANGLE_STEP * i + rot % 360 + 360) % 360
-      const diff = Math.min(cardAngle, 360 - cardAngle)
-      if (diff < minDiff) { minDiff = diff; closest = i }
+  // Drag / swipe
+  const onDragStart = (x: number) => { dragStartX.current = x }
+  const onDragEnd = (x: number) => {
+    if (dragStartX.current === null) return
+    const delta = dragStartX.current - x
+    if (Math.abs(delta) > 40) { if (delta > 0) { next() } else { prev() } }
+    dragStartX.current = null
+  }
+
+  const getCardStyle = (i: number) => {
+    const diff = i - active
+    const normalised = ((diff % steps.length) + steps.length) % steps.length
+    const offset = normalised > steps.length / 2 ? normalised - steps.length : normalised
+
+    if (offset === 0) {
+      // Active — front and center
+      return {
+        zIndex: 20,
+        transform: 'translateX(0px) rotateY(0deg) scale(1)',
+        opacity: 1,
+        filter: 'none',
+        pointerEvents: 'auto' as const,
+      }
+    } else if (Math.abs(offset) === 1) {
+      // Neighboring
+      const dir = offset > 0 ? 1 : -1
+      return {
+        zIndex: 10,
+        transform: `translateX(${dir * 58}%) rotateY(${-dir * 38}deg) scale(0.78)`,
+        opacity: 0.55,
+        filter: 'blur(0.5px)',
+        pointerEvents: 'auto' as const,
+      }
+    } else {
+      return {
+        zIndex: 5,
+        transform: `translateX(${offset > 0 ? '100%' : '-100%'}) scale(0.6)`,
+        opacity: 0,
+        filter: 'blur(2px)',
+        pointerEvents: 'none' as const,
+      }
     }
-    // Snap so closest card is at front (angle = 0)
-    const targetRot = rot - ((((ANGLE_STEP * closest + rot % 360) + 360) % 360 > 180)
-      ? (((ANGLE_STEP * closest + rot % 360) + 360) % 360) - 360
-      : ((ANGLE_STEP * closest + rot % 360) + 360) % 360)
-    setRotation(targetRot)
-    setActive(closest)
-    lastRotation.current = targetRot
-  }, [])
-
-  // Go to specific step
-  const goTo = useCallback((index: number) => {
-    const targetRot = lastRotation.current - ((ANGLE_STEP * index + lastRotation.current % 360 + 360) % 360 > 180
-      ? ((ANGLE_STEP * index + lastRotation.current % 360 + 360) % 360) - 360
-      : ((ANGLE_STEP * index + lastRotation.current % 360 + 360) % 360))
-    setRotation(targetRot)
-    setActive(index)
-    lastRotation.current = targetRot
-  }, [])
-
-  // Mouse events
-  const onMouseDown = (e: React.MouseEvent) => {
-    dragStart.current = e.clientX
-    setDragging(true)
-  }
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (!dragging || dragStart.current === null) return
-    const delta = e.clientX - dragStart.current
-    setRotation(lastRotation.current + delta * 0.35)
-  }
-  const onMouseUp = () => {
-    if (!dragging) return
-    setDragging(false)
-    dragStart.current = null
-    snapToNearest(rotation)
-  }
-
-  // Touch events
-  const onTouchStart = (e: React.TouchEvent) => {
-    dragStart.current = e.touches[0].clientX
-    setDragging(true)
-  }
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (dragStart.current === null) return
-    const delta = e.touches[0].clientX - dragStart.current
-    setRotation(lastRotation.current + delta * 0.35)
-  }
-  const onTouchEnd = () => {
-    setDragging(false)
-    dragStart.current = null
-    snapToNearest(rotation)
   }
 
   return (
-    <section className="py-20 overflow-hidden" style={{ background: 'linear-gradient(180deg, #fff 0%, #F1F5F9 100%)' }}>
-      <div className="max-w-5xl mx-auto px-4">
+    <section
+      className="py-24 overflow-hidden relative"
+      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #EFF6FF 100%)' }}
+    >
+      {/* Background accent */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-40"
+        style={{
+          background: `radial-gradient(ellipse 60% 50% at 50% 60%, ${steps[active].bg} 0%, transparent 70%)`,
+          transition: 'background 0.5s ease',
+        }}
+      />
 
+      <div className="max-w-4xl mx-auto px-4 relative">
         {/* Header */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +115,7 @@ export default function HowItWorks() {
             className="inline-block text-xs font-bold px-4 py-1.5 rounded-full mb-4"
             style={{ backgroundColor: 'rgba(24,34,76,0.07)', color: 'var(--navy)' }}
           >
-            Proceso simple
+            3 simples pasos
           </motion.span>
           <motion.h2
             className="section-title"
@@ -142,177 +128,162 @@ export default function HowItWorks() {
           </motion.h2>
           <motion.p
             className="section-subtitle"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            Arrastra el círculo o toca los puntos para navegar entre los pasos
+            Arrastra o desliza para explorar cada paso
           </motion.p>
         </div>
 
-        {/* 3D Carousel */}
+        {/* Coverflow stage */}
         <div
-          className="relative mx-auto flex items-center justify-center"
-          style={{ height: radius * 2 + 240, maxWidth: 700, cursor: dragging ? 'grabbing' : 'grab' }}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseUp}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
+          className="relative mx-auto"
+          onMouseDown={(e) => onDragStart(e.clientX)}
+          onMouseUp={(e) => onDragEnd(e.clientX)}
+          onMouseLeave={(e) => onDragEnd(e.clientX)}
+          onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
+          onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX)}
+          style={{
+            height: 420,
+            maxWidth: 640,
+            perspective: '1100px',
+            perspectiveOrigin: '50% 45%',
+            cursor: 'grab',
+            userSelect: 'none',
+          } as React.CSSProperties}
         >
-          {/* Center decorative hub */}
-          <div
-            className="absolute z-10 w-24 h-24 rounded-full flex items-center justify-center shadow-2xl pointer-events-none select-none"
-            style={{
-              background: 'linear-gradient(135deg, #18224C 0%, #223870 100%)',
-              top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-              boxShadow: '0 0 60px rgba(0,208,255,0.25), 0 8px 32px rgba(24,34,76,0.5)',
-            }}
-          >
-            <span className="text-white font-black text-lg select-none" style={{ color: '#00D0FF' }}>e-M</span>
-          </div>
-
-          {/* Orbit ring */}
-          <div
-            className="absolute rounded-full border pointer-events-none"
-            style={{
-              width: radius * 2,
-              height: radius * 2,
-              top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
-              borderColor: 'rgba(24,34,76,0.08)',
-              borderStyle: 'dashed',
-            }}
-          />
-
-          {/* Rotating cards */}
-          <div
-            className="absolute"
-            style={{
-              width: '100%', height: '100%',
-              transition: dragging ? 'none' : 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              transform: `rotateY(${rotation}deg)`,
-              transformStyle: 'preserve-3d',
-              perspective: 1200,
-              top: 0, left: 0,
-            }}
-          >
-            {steps.map((step, i) => {
-              const cardAngle = ANGLE_STEP * i
-              const isActive = i === active
-              const Icon = step.icon
-              return (
+          {steps.map((step, i) => {
+            const Icon = step.icon
+            const style = getCardStyle(i)
+            const isActive = i === active
+            return (
+              <div
+                key={step.number}
+                onClick={() => !isActive && setActive(i)}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginLeft: '-160px',
+                  marginTop: '-175px',
+                  width: 320,
+                  height: 350,
+                  transition: 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transformStyle: 'preserve-3d',
+                  ...style,
+                }}
+              >
+                {/* Card */}
                 <div
-                  key={step.number}
-                  onClick={() => goTo(i)}
+                  className="w-full h-full rounded-3xl flex flex-col items-center justify-start pt-8 px-7 pb-7 relative overflow-hidden"
                   style={{
-                    position: 'absolute',
-                    top: '50%', left: '50%',
-                    transform: `
-                      rotateY(${cardAngle}deg)
-                      translateZ(${radius}px)
-                      translateX(-50%)
-                      translateY(-50%)
-                    `,
-                    transformStyle: 'preserve-3d',
-                    backfaceVisibility: 'hidden',
-                    transition: dragging ? 'none' : 'all 0.4s ease',
-                    zIndex: isActive ? 20 : 10,
-                    cursor: isActive ? 'default' : 'pointer',
+                    background: 'white',
+                    boxShadow: isActive ? step.glow : '0 4px 24px rgba(0,0,0,0.07)',
+                    border: isActive ? `1.5px solid ${step.color}33` : '1.5px solid rgba(0,0,0,0.06)',
+                    transition: 'box-shadow 0.5s ease, border 0.5s ease',
                   }}
                 >
-                  <motion.div
-                    animate={{
-                      scale: isActive ? 1 : 0.82,
-                      opacity: isActive ? 1 : 0.5,
-                    }}
-                    transition={{ duration: 0.4 }}
-                    className="rounded-3xl p-6 flex flex-col items-center text-center select-none"
+                  {/* Background tint */}
+                  <div
+                    className="absolute inset-0 rounded-3xl transition-opacity duration-500"
                     style={{
-                      width: radius < 200 ? 160 : 200,
-                      background: 'white',
-                      boxShadow: isActive
-                        ? `0 20px 60px ${step.glow}, 0 4px 20px rgba(0,0,0,0.1)`
-                        : '0 4px 16px rgba(0,0,0,0.08)',
-                      border: isActive ? `2px solid ${step.color}` : '2px solid transparent',
+                      background: `radial-gradient(ellipse at 50% 0%, ${step.bg} 0%, transparent 65%)`,
+                      opacity: isActive ? 1 : 0,
+                    }}
+                  />
+
+                  {/* Number badge */}
+                  <span
+                    className="relative z-10 w-9 h-9 rounded-full text-white text-xs font-black flex items-center justify-center mb-5 shrink-0"
+                    style={{ backgroundColor: step.color, boxShadow: `0 4px 14px ${step.color}66` }}
+                  >
+                    {step.number}
+                  </span>
+
+                  {/* Icon circle */}
+                  <div
+                    className="relative z-10 w-20 h-20 rounded-2xl flex items-center justify-center mb-5 shrink-0 transition-transform duration-300"
+                    style={{
+                      backgroundColor: step.bg,
+                      color: step.color,
+                      transform: isActive ? 'scale(1.08)' : 'scale(1)',
                     }}
                   >
-                    {/* Number badge */}
-                    <span
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white mb-3 shrink-0"
-                      style={{ backgroundColor: step.color }}
-                    >
-                      {step.number}
-                    </span>
+                    <Icon size={34} strokeWidth={1.8} />
+                  </div>
 
-                    {/* Icon */}
-                    <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                      style={{ backgroundColor: step.bg, color: step.color }}
-                    >
-                      <Icon size={30} />
-                    </div>
-
-                    <h3 className="font-bold text-base mb-2 leading-tight" style={{ color: 'var(--navy)' }}>
-                      {step.title}
-                    </h3>
-                    {isActive && (
-                      <motion.p
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="text-xs leading-relaxed"
-                        style={{ color: 'var(--gray)' }}
-                      >
-                        {step.description}
-                      </motion.p>
-                    )}
-                  </motion.div>
+                  {/* Text */}
+                  <h3
+                    className="relative z-10 text-xl font-bold text-center mb-3 transition-all duration-300"
+                    style={{ color: 'var(--navy)' }}
+                  >
+                    {step.title}
+                  </h3>
+                  <p
+                    className="relative z-10 text-sm text-center leading-relaxed transition-all duration-500"
+                    style={{
+                      color: 'var(--gray)',
+                      opacity: isActive ? 1 : 0,
+                      transform: isActive ? 'translateY(0)' : 'translateY(10px)',
+                    }}
+                  >
+                    {step.description}
+                  </p>
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
         </div>
 
-        {/* Step dots / nav */}
-        <div className="flex items-center justify-center gap-4 -mt-8">
-          {steps.map((step, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className="flex flex-col items-center gap-1.5 group transition-all"
-              aria-label={step.title}
-            >
-              <span
-                className="block rounded-full transition-all duration-300"
+        {/* Controls */}
+        <div className="flex items-center justify-center gap-6 mt-6">
+          <button
+            onClick={prev}
+            className="w-11 h-11 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            style={{ borderColor: steps[active].color, color: steps[active].color }}
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* Dot indicators */}
+          <div className="flex gap-2.5 items-center">
+            {steps.map((step, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
                 style={{
-                  width: i === active ? 28 : 10,
+                  width: i === active ? 32 : 10,
                   height: 10,
+                  borderRadius: 99,
                   backgroundColor: i === active ? step.color : 'rgba(24,34,76,0.15)',
+                  transition: 'all 0.35s ease',
+                  boxShadow: i === active ? `0 0 10px ${step.color}80` : 'none',
                 }}
               />
-              <span className="text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: step.color }}>
-                {step.title}
-              </span>
-            </button>
-          ))}
+            ))}
+          </div>
+
+          <button
+            onClick={next}
+            className="w-11 h-11 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            style={{ borderColor: steps[active].color, color: steps[active].color }}
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
 
-        {/* Hint text */}
+        {/* Step label */}
         <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8 }}
-          className="text-center text-xs mt-6"
-          style={{ color: 'rgba(100,116,139,0.6)' }}
+          key={active}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center text-sm font-semibold mt-4"
+          style={{ color: steps[active].color }}
         >
-          ← Arrastra o desliza para explorar →
+          {steps[active].emoji} {steps[active].title}
         </motion.p>
-
       </div>
     </section>
   )
