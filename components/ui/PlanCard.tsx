@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Check, X, ShoppingCart } from 'lucide-react'
 import PaymentModal from '@/components/ui/PaymentModal'
+import { fbEvent, generateEventId } from '@/lib/fbq'
 
 interface PlanCardProps {
   name: string
@@ -26,6 +27,17 @@ function formatCOP(amount: number): string {
 
 export default function PlanCard({ name, price, productId = null, badge, highlighted, features, dian, type }: PlanCardProps) {
   const [modalOpen, setModalOpen] = useState(false)
+
+  const handleBuyClick = () => {
+    // ViewContent — usuario ve el plan y hace click en Comprar
+    fbEvent('ViewContent', {
+      content_name: name,
+      content_type: 'product',
+      value: price / 100, // COP a unidades (Meta usa float)
+      currency: 'COP',
+    }, generateEventId())
+    setModalOpen(true)
+  }
 
   return (
     <>
@@ -94,7 +106,7 @@ export default function PlanCard({ name, price, productId = null, badge, highlig
 
         {/* CTA */}
         <button
-          onClick={() => setModalOpen(true)}
+          onClick={handleBuyClick}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
           style={{
             backgroundColor: highlighted ? 'var(--cyan)' : 'var(--navy)',

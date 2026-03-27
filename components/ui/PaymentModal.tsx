@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Loader2, CheckCircle, AlertCircle, ArrowLeft, CreditCard, Smartphone, Building2 } from 'lucide-react'
+import { fbEvent, generateEventId, sendCapi } from '@/lib/fbq'
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -124,6 +125,22 @@ export default function PaymentModal({ isOpen, onClose, planName, planPrice, pro
       script.onload = () => {
         if (!window.KR) return
         window.KR.onSubmit(async () => {
+          // Purchase event — tarjeta
+          const eventId = generateEventId()
+          fbEvent('Purchase', {
+            content_name: planName,
+            value: planPrice / 100,
+            currency: 'COP',
+          }, eventId)
+          sendCapi({
+            eventName: 'Purchase',
+            eventId,
+            value: planPrice / 100,
+            currency: 'COP',
+            contentName: planName,
+            email: form.customerEmail,
+            phone: form.customerPhone,
+          })
           try {
             await fetch('/api/payments/payzen/complete-order', {
               method: 'POST',
@@ -175,6 +192,23 @@ export default function PaymentModal({ isOpen, onClose, planName, planPrice, pro
       setOrderId(data.orderId)
       setFormToken(data.formToken)
       setStep('methods')
+
+      // InitiateCheckout — usuario pasó el formulario y va a elegir método de pago
+      const eventId = generateEventId()
+      fbEvent('InitiateCheckout', {
+        content_name: planName,
+        value: planPrice / 100,
+        currency: 'COP',
+      }, eventId)
+      sendCapi({
+        eventName: 'InitiateCheckout',
+        eventId,
+        value: planPrice / 100,
+        currency: 'COP',
+        contentName: planName,
+        email: form.customerEmail,
+        phone: form.customerPhone,
+      })
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Error inesperado')
       setStep('error')
@@ -207,6 +241,22 @@ export default function PaymentModal({ isOpen, onClose, planName, planPrice, pro
       script.onload = () => {
         if (!window.KR) return
         window.KR.onSubmit(async () => {
+          // Purchase event — Nequi / PSE / Bancolombia
+          const eventId = generateEventId()
+          fbEvent('Purchase', {
+            content_name: planName,
+            value: planPrice / 100,
+            currency: 'COP',
+          }, eventId)
+          sendCapi({
+            eventName: 'Purchase',
+            eventId,
+            value: planPrice / 100,
+            currency: 'COP',
+            contentName: planName,
+            email: form.customerEmail,
+            phone: form.customerPhone,
+          })
           try {
             await fetch('/api/payments/payzen/complete-order', {
               method: 'POST',
