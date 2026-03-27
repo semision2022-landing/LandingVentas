@@ -74,12 +74,20 @@ CREATE POLICY "public_insert_conversations" ON conversations
 CREATE POLICY "public_insert_messages" ON messages
   FOR INSERT WITH CHECK (true);
 
--- 8. Habilitar Realtime
--- Nota: ejecutar si no están ya habilitadas
-ALTER PUBLICATION supabase_realtime ADD TABLE conversations;
-ALTER PUBLICATION supabase_realtime ADD TABLE messages;
-ALTER PUBLICATION supabase_realtime ADD TABLE agents;
-ALTER PUBLICATION supabase_realtime ADD TABLE sales;
+-- 8. Habilitar Realtime (ignora si la tabla ya está en la publicación)
+DO $$
+DECLARE
+  tablas text[] := ARRAY['conversations', 'messages', 'agents', 'sales'];
+  t text;
+BEGIN
+  FOREACH t IN ARRAY tablas LOOP
+    BEGIN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE %I', t);
+    EXCEPTION WHEN duplicate_object THEN
+      RAISE NOTICE 'Tabla % ya está en supabase_realtime, se omite.', t;
+    END;
+  END LOOP;
+END $$;
 
 -- ============================================
 -- INSTRUCCIONES POST-MIGRACIÓN:
