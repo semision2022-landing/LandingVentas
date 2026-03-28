@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
 
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID ?? ''
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://landing.emision.co'),
+  metadataBase: new URL('https://ventas.emision.co'),
   title: 'Facturación Electrónica Colombia | e-Misión — Avalado DIAN',
   description:
     'Emite facturas electrónicas desde $120.000/año. +10.000 empresas confían en e-Misión. Habilitación DIAN en 48h. Nómina, POS y SG-SST.',
@@ -19,6 +20,9 @@ export const metadata: Metadata = {
     'habilitación DIAN',
   ],
   authors: [{ name: 'Nodexum S.A.S.' }],
+  verification: {
+    google: '2Vazc4p1s5kKzTUMCZzFpZyFz7EX_zX-70IKtGDvC3E',
+  },
   openGraph: {
     title: 'Facturación Electrónica Colombia | e-Misión — Avalado DIAN',
     description:
@@ -36,7 +40,11 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   alternates: { canonical: 'https://ventas.emision.co' },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
+  },
   icons: {
     icon: [
       { url: '/icon.png', sizes: '512x512', type: 'image/png' },
@@ -131,6 +139,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         {children}
+
+        {/* Google Analytics 4 */}
+        <GoogleAnalytics />
 
         {/* Facebook Pixel base code */}
         {FB_PIXEL_ID && (
