@@ -544,28 +544,40 @@ export default function ChatWidget() {
 
         {/* Toggle button (desktop + mobile) */}
         <div className="relative flex flex-col items-end gap-2">
-          {/* Speech bubble */}
+          {/* Speech bubble — simple "¿Hablamos?" */}
           {!isOpen && (
             <motion.div
               initial={{ opacity: 0, y: 8, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 1.5, duration: 0.4, ease: 'easeOut' }}
-              className="relative mr-1 px-4 py-2.5 rounded-2xl rounded-br-none shadow-lg max-w-[220px] text-right"
-              style={{ backgroundColor: 'white', border: '1px solid var(--gray-border)' }}
+              className="relative mr-2 px-3 py-2 rounded-2xl rounded-br-none shadow-md cursor-pointer"
+              style={{ backgroundColor: 'var(--navy)', border: '1px solid rgba(0,208,255,0.3)' }}
+              onClick={() => setIsOpen(true)}
             >
-              <p className="text-xs font-semibold leading-snug" style={{ color: 'var(--navy)' }}>💬 ¿Preguntas sobre planes?</p>
-              <p className="text-xs leading-snug mt-0.5" style={{ color: 'var(--gray)' }}>¡Laura te asesora ahora!</p>
-              <span className="absolute -bottom-2 right-4 w-0 h-0" style={{ borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '8px solid white' }} />
+              <p className="text-sm font-bold whitespace-nowrap" style={{ color: 'var(--cyan)' }}>¿Hablamos? 💬</p>
+              <span className="absolute -bottom-2 right-4 w-0 h-0" style={{ borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: `8px solid var(--navy)` }} />
             </motion.div>
           )}
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
+            className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 hover:scale-110 active:scale-95"
             style={{ backgroundColor: 'var(--navy)' }}
             aria-label={isOpen ? 'Cerrar chat' : 'Abrir chat con Laura'}
           >
-            {!isOpen && <span className="absolute inset-0 rounded-full animate-ping opacity-30" style={{ backgroundColor: 'var(--navy)' }} />}
+            {/* Outer slow pulse ring */}
+            {!isOpen && (
+              <>
+                <span
+                  className="absolute inset-0 rounded-full animate-ping"
+                  style={{ backgroundColor: 'var(--cyan)', opacity: 0.25 }}
+                />
+                <span
+                  className="absolute -inset-1 rounded-full animate-pulse"
+                  style={{ backgroundColor: 'var(--cyan)', opacity: 0.12 }}
+                />
+              </>
+            )}
             <AnimatePresence mode="wait">
               {isOpen ? (
                 <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
