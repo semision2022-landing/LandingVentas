@@ -20,7 +20,19 @@ export interface SyncResult {
   error?: string
 }
 
-export async function runMetaSync(): Promise<SyncResult> {
+export type DatePreset = 'today' | 'yesterday' | 'last_7d' | 'last_30d' | 'this_month'
+
+// Map UI presets to Meta API date_preset values
+const META_PRESET: Record<DatePreset, string> = {
+  today: 'today',
+  yesterday: 'yesterday',
+  last_7d: 'last_7_d',
+  last_30d: 'last_30d',
+  this_month: 'this_month',
+}
+
+export async function runMetaSync(uiPreset: DatePreset = 'last_30d'): Promise<SyncResult> {
+  const datePreset = META_PRESET[uiPreset]
   const supabase = getSupabase()
   const startedAt = Date.now()
   let campaignsSynced = 0
@@ -28,7 +40,7 @@ export async function runMetaSync(): Promise<SyncResult> {
 
   try {
     // ── 1. Campaigns ────────────────────────────────────────────────────────
-    const campaigns = await fetchCampaigns('last_30d')
+    const campaigns = await fetchCampaigns(datePreset)
 
     const campaignRows = campaigns.map((c) => {
       const ins = c.insights?.data?.[0]
@@ -71,7 +83,7 @@ export async function runMetaSync(): Promise<SyncResult> {
     }
 
     // ── 2. Adsets ─────────────────────────────────────────────────────────
-    const adsets = await fetchAdsets('last_30d')
+    const adsets = await fetchAdsets(datePreset)
 
     const adsetRows = adsets.map((a) => {
       const ins = a.insights?.data?.[0]
@@ -101,7 +113,7 @@ export async function runMetaSync(): Promise<SyncResult> {
     }
 
     // ── 3. Daily insights ─────────────────────────────────────────────────
-    const daily = await fetchDailyInsights('last_30d')
+    const daily = await fetchDailyInsights(datePreset)
     const dailyRows = daily.map((d) => ({
       account_id: process.env.META_AD_ACCOUNT_ID,
       date_start: d.date_start,

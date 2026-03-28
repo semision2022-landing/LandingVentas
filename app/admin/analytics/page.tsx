@@ -89,8 +89,9 @@ function getDateRange(preset: Preset): { start: Date; end: Date } {
 }
 
 function inRange(dateStr: string, start: Date, end: Date): boolean {
-  const d = new Date(dateStr)
-  const local = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  // Parse YYYY-MM-DD as LOCAL date to avoid UTC timezone shift (e.g. Colombia UTC-5)
+  const parts = dateStr.split('-')
+  const local = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
   return local >= start && local <= end
 }
 
@@ -130,7 +131,7 @@ export default function AnalyticsPage() {
   useEffect(() => { fetchData() }, [fetchData])
 
   // ── Sync handler ───────────────────────────────────────────────────────────
-  const handleSync = async () => {
+  const handleSync = async (preset: typeof datePreset = datePreset) => {
     setSyncing(true)
     setSyncError(null)
     const supabase = createAuthClient()
@@ -138,7 +139,11 @@ export default function AnalyticsPage() {
     try {
       const res = await fetch('/api/meta/refresh', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${session?.access_token}` },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ datePreset: preset }),
       })
       const body = await res.json()
       if (!res.ok) setSyncError(body?.error ?? `Error ${res.status}`)
@@ -150,7 +155,11 @@ export default function AnalyticsPage() {
     }
   }
 
-  // ── Date-filtered daily insights ───────────────────────────────────────────
+  // ── Date preset change → auto-sync ────────────────────────────────────────
+  const handleDateChange = (preset: typeof datePreset) => {
+    setDatePreset(preset)
+    handleSync(preset)
+  }
   const { start: rangeStart, end: rangeEnd } = useMemo(() => getDateRange(datePreset), [datePreset])
 
   const filteredDaily = useMemo(
@@ -224,7 +233,7 @@ export default function AnalyticsPage() {
             onSync={handleSync}
             syncing={syncing}
           />
-          <DateRangePicker value={datePreset} onChange={setDatePreset} />
+          <DateRangePicker value={datePreset} onChange={handleDateChange} />
         </div>
       </div>
 
@@ -332,7 +341,7 @@ export default function AnalyticsPage() {
             Haz clic en <strong>Sincronizar ahora</strong> para traer las campañas de Meta Ads.
           </p>
           <button
-            onClick={handleSync}
+            onClick={() => handleSync()}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white"
             style={{ backgroundColor: '#18224C' }}
           >
