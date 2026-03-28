@@ -74,6 +74,7 @@ export default function AnalyticsPage() {
   const [syncLog, setSyncLog] = useState<SyncLog | null>(null)
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
+  const [syncError, setSyncError] = useState<string | null>(null)
   const [datePreset, setDatePreset] = useState<Preset>('last_30d')
   const [campaignFilter, setCampaignFilter] = useState('ALL')
 
@@ -96,14 +97,23 @@ export default function AnalyticsPage() {
 
   const handleSync = async () => {
     setSyncing(true)
+    setSyncError(null)
     const supabase = createAuthClient()
     const { data: { session } } = await supabase.auth.getSession()
     try {
-      await fetch('/api/meta/refresh', {
+      const res = await fetch('/api/meta/refresh', {
         method: 'POST',
         headers: { Authorization: `Bearer ${session?.access_token}` },
       })
+      const body = await res.json()
+      if (!res.ok) {
+        setSyncError(body?.error ?? `Error ${res.status}`)
+      } else {
+        setSyncError(null)
+      }
       await fetchData()
+    } catch (e) {
+      setSyncError(e instanceof Error ? e.message : 'Error desconocido')
     } finally {
       setSyncing(false)
     }
@@ -159,6 +169,18 @@ export default function AnalyticsPage() {
           <DateRangePicker value={datePreset} onChange={setDatePreset} />
         </div>
       </div>
+
+      {/* Sync error banner */}
+      {syncError && (
+        <div className="rounded-xl px-4 py-3 text-sm flex items-start gap-3" style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}>
+          <span className="shrink-0 mt-0.5">⚠️</span>
+          <div>
+            <p className="font-bold">Error al sincronizar con Meta Ads</p>
+            <p className="text-xs mt-0.5 font-mono opacity-80">{syncError}</p>
+            <p className="text-xs mt-1.5 opacity-70">Verifica que las variables META_ACCESS_TOKEN, META_AD_ACCOUNT_ID y META_APP_ID estén correctas en Vercel, y que el SQL de Supabase esté ejecutado.</p>
+          </div>
+        </div>
+      )}
 
       {/* Campaign filter dropdown */}
       <div className="flex items-center gap-3 flex-wrap">
