@@ -230,7 +230,7 @@ export default function AnalyticsPage() {
             lastSync={syncLog?.synced_at ?? null}
             status={syncing ? 'loading' : syncLog?.status === 'success' ? 'success' : syncLog?.status === 'error' ? 'error' : 'idle'}
             tokenDaysLeft={null}
-            onSync={handleSync}
+            onSync={() => handleSync()}
             syncing={syncing}
           />
           <DateRangePicker value={datePreset} onChange={handleDateChange} />
