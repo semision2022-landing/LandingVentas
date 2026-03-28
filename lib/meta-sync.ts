@@ -26,7 +26,7 @@ export type DatePreset = 'today' | 'yesterday' | 'last_7d' | 'last_30d' | 'this_
 const META_PRESET: Record<DatePreset, string> = {
   today: 'today',
   yesterday: 'yesterday',
-  last_7d: 'last_7_d',
+  last_7d: 'last_7d',
   last_30d: 'last_30d',
   this_month: 'this_month',
 }
