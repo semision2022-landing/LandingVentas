@@ -38,16 +38,15 @@ export async function runMetaSync(): Promise<SyncResult> {
             ['purchase', 'lead', 'complete_registration'].includes(a.action_type)
           )
           .reduce((sum, a) => sum + Number(a.value || 0), 0) ?? 0
-      const costPerConv = ins?.cost_per_action?.find((a) =>
-        ['purchase', 'lead', 'complete_registration'].includes(a.action_type)
-      )
+      const spend = Number(ins?.spend ?? 0)
+      const costPerConversion = conversions > 0 ? spend / conversions : 0
       return {
         account_id: process.env.META_AD_ACCOUNT_ID,
         campaign_id: c.id,
         campaign_name: c.name,
         status: c.status,
         objective: c.objective,
-        spend: Number(ins?.spend ?? 0),
+        spend,
         impressions: Number(ins?.impressions ?? 0),
         clicks: Number(ins?.clicks ?? 0),
         reach: Number(ins?.reach ?? 0),
@@ -55,7 +54,7 @@ export async function runMetaSync(): Promise<SyncResult> {
         cpc: Number(ins?.cpc ?? 0),
         cpm: Number(ins?.cpm ?? 0),
         conversions,
-        cost_per_conversion: Number(costPerConv?.value ?? 0),
+        cost_per_conversion: costPerConversion,
         frequency: Number(ins?.frequency ?? 0),
         date_start: ins?.date_start ?? null,
         date_stop: ins?.date_stop ?? null,

@@ -83,7 +83,7 @@ export async function fetchCampaigns(datePreset = 'last_30d'): Promise<MetaCampa
   const data = await metaFetch<{ data: MetaCampaign[] }>(
     `${ACCOUNT}/campaigns`,
     {
-      fields: `id,name,status,objective,insights.date_preset(${datePreset}){spend,impressions,clicks,reach,ctr,cpc,cpm,frequency,actions,cost_per_action,date_start,date_stop}`,
+      fields: `id,name,status,objective,insights.date_preset(${datePreset}){spend,impressions,clicks,reach,ctr,cpc,cpm,frequency,actions,date_start,date_stop}`,
       limit: '200',
     }
   )
