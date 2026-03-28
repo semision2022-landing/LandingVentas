@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { ChevronDown, ChevronUp, ChevronRight, Download } from 'lucide-react'
 import { formatCOP, formatPct, formatNumber, statusColor, statusLabel, scoreMetric } from '@/lib/meta-formatters'
 import AdsetsTable from './AdsetsTable'
@@ -151,9 +151,8 @@ export default function CampaignsTable({ campaigns, adsets }: CampaignsTableProp
               const cpcScore = scoreMetric('cpc', c.cpc)
               const campAdsets = adsets.filter((a) => a.campaign_id === c.campaign_id)
               return (
-                <>
+                <React.Fragment key={c.campaign_id}>
                   <tr
-                    key={c.campaign_id}
                     className="transition-colors"
                     style={{ borderTop: '1px solid #F1F5F9', cursor: campAdsets.length ? 'pointer' : 'default' }}
                     onClick={() => campAdsets.length && setExpanded(isExp ? null : c.campaign_id)}
@@ -197,13 +196,13 @@ export default function CampaignsTable({ campaigns, adsets }: CampaignsTableProp
                     </td>
                   </tr>
                   {isExp && (
-                    <tr key={`${c.campaign_id}-adsets`} style={{ backgroundColor: '#F8FAFC' }}>
+                    <tr style={{ backgroundColor: '#F8FAFC' }}>
                       <td colSpan={9} className="px-8 pb-4 pt-2">
                         <AdsetsTable adsets={campAdsets} />
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               )
             })}
           </tbody>
