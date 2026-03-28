@@ -12,6 +12,7 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection'
 import FAQSection from '@/components/sections/FAQSection'
 import FinalCTASection from '@/components/sections/FinalCTASection'
 import ChatWidget from '@/components/chat/ChatWidget'
+import SocialProofToast from '@/components/ui/SocialProofToast'
 
 import { getWooCommerceProducts } from '@/lib/woocommerce'
 
@@ -36,6 +37,7 @@ export default async function HomePage() {
       </main>
       <Footer />
       <ChatWidget />
+      <SocialProofToast />
     </>
   )
 }
