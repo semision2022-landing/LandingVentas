@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation'
 import { createAuthClient } from '@/lib/supabase-auth'
 import {
-  LayoutDashboard, MessageSquare, Users, Settings, LogOut, ShoppingBag,
+  LayoutDashboard, MessageSquare, Users, Settings, LogOut, ShoppingBag, BarChart2,
 } from 'lucide-react'
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { label: 'Chat Center', href: '/admin/conversations', icon: MessageSquare },
   { label: 'Leads', href: '/admin/leads', icon: Users },
   { label: 'Ventas', href: '/admin/sales', icon: ShoppingBag },
+  { label: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
   { label: 'Configuración', href: '/admin/settings', icon: Settings },
 ]
 
