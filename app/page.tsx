@@ -16,6 +16,7 @@ const HowItWorks = dynamic(() => import('@/components/sections/HowItWorks'), { s
 const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection'), { ssr: false })
 const FAQSection = dynamic(() => import('@/components/sections/FAQSection'), { ssr: true })
 const FinalCTASection = dynamic(() => import('@/components/sections/FinalCTASection'), { ssr: true })
+const CertificationsSection = dynamic(() => import('@/components/sections/CertificationsSection'), { ssr: true })
 
 // ── DEFER: sin ssr, carga después de hidratación ──
 const ChatWidget = dynamic(() => import('@/components/chat/ChatWidget'), { ssr: false })
@@ -41,6 +42,7 @@ export default async function HomePage() {
         <TestimonialsSection />
         <FAQSection />
         <FinalCTASection />
+        <CertificationsSection />
       </main>
       <Footer />
       <ChatWidget />
