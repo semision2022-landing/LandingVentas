@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { fbEvent, generateEventId } from '@/lib/fbq'
 import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
@@ -34,9 +35,12 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2 group" aria-label="e-Misión inicio">
-            <img
+            <Image
               src="/logo.svg"
               alt="e-Misión logo"
+              width={180}
+              height={72}
+              priority
               className="w-auto h-14 sm:h-16 lg:h-[72px] animate-wave-logo"
             />
           </a>

@@ -7,11 +7,11 @@ import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0 } },
 }
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
 }
 
 // Live counter that increments randomly to simulate real-time joins

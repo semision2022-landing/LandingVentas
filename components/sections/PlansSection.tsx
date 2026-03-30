@@ -11,7 +11,6 @@ interface PlansSectionProps {
 }
 
 const billingPlans = [
-  { name: 'Prueba Compra Real', staticPrice: 1000, wcProductId: 16673, docs: 'Producto de prueba', dian: false, popular: false, badge: '🧪 Prueba' },
   { name: 'Plan 25', staticPrice: 120000, wcProductId: 2994, docs: '25 documentos', dian: false, popular: false, badge: null },
   { name: 'Plan 100', staticPrice: 239000, wcProductId: 12521, docs: '100 documentos', dian: false, popular: true, badge: '⭐ Popular' },
   { name: 'Plan 150', staticPrice: 289000, wcProductId: 2991, docs: '150 documentos', dian: false, popular: false, badge: null },

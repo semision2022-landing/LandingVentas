@@ -1,7 +1,17 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { Poppins } from 'next/font/google'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
+
+// next/font auto-hosts Poppins — no external request, display:swap built-in
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-poppins',
+  preload: true,
+})
 
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID ?? ''
 
@@ -156,20 +166,16 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CO">
+    <html lang="es-CO" className={poppins.variable}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
+        {/* Preload LCP hero background hint */}
+        <link rel="preload" as="image" href="/logo.svg" />
       </head>
-      <body className="font-sans antialiased">
+      <body className={`${poppins.className} antialiased`}>
         {children}
 
         {/* Google Analytics 4 */}
