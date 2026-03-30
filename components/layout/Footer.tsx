@@ -63,7 +63,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">
-              Proveedor tecnológico avalado por la DIAN. Más de 10.000 empresas confían en nosotros desde 2018.
+              Proveedor tecnológico autorizado por la DIAN. Cada vez más empresas confían en nosotros desde 2019.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -159,7 +159,7 @@ export default function Footer() {
             className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
             style={{ backgroundColor: 'rgba(0, 208, 255, 0.1)', color: 'var(--cyan)' }}
           >
-            ✓ Proveedor avalado por la DIAN
+            ✓ Proveedor autorizado por la DIAN
           </div>
         </div>
       </div>

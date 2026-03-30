@@ -70,7 +70,7 @@ export default function LogoStrip() {
           </svg>
         ))}
         <span className="text-sm font-semibold ml-1" style={{ color: 'var(--navy)' }}>4.9 / 5</span>
-        <span className="text-sm" style={{ color: 'var(--gray)' }}>· +200 reseñas verificadas</span>
+        <span className="text-sm" style={{ color: 'var(--gray)' }}>· Clientes satisfechos</span>
       </div>
     </section>
   )

@@ -151,7 +151,7 @@ export default function PlansSection({ wcProducts = [] }: PlansSectionProps) {
                     highlighted={plan.popular}
                     features={[
                       plan.docs + ' electrónicos',
-                      'Factura, nota crédito, nota débito, doc. soporte',
+                      'Factura, nota crédito, nota débito, doc. soporte, eventos mercantiles y endoso',
                       'Soporte técnico gratuito',
                       plan.dian ? 'Habilitación DIAN GRATIS en 48h' : 'No incluye habilitación DIAN',
                     ]}

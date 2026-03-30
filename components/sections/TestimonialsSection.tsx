@@ -109,7 +109,7 @@ export default function TestimonialsSection() {
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={12} fill="#F59E0B" className="text-amber-400" />
             ))}
-            4.9 · +200 reseñas reales
+            4.9 · Clientes verificados
           </motion.div>
           <motion.h2
             className="section-title"
@@ -118,7 +118,7 @@ export default function TestimonialsSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            Lo que dicen +10.000 empresas
+            Lo que dicen nuestros clientes
           </motion.h2>
           <motion.p
             className="section-subtitle"

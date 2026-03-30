@@ -46,10 +46,10 @@ function CountUpNumber({ target, label }: CountUpProps) {
 }
 
 const metrics = [
-  { target: '+10.000', label: 'Empresas activas' },
+  { target: 'Creciendo', label: 'Empresas activas' },
   { target: '+140M', label: 'Facturas procesadas ante la DIAN' },
   { target: '48h', label: 'Habilitación DIAN' },
-  { target: '2018', label: 'Año de fundación' },
+  { target: '7+', label: 'Años en el mercado' },
 ]
 
 export default function TrustBar() {

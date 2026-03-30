@@ -17,9 +17,9 @@ const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID ?? ''
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ventas.emision.co'),
-  title: 'Facturación Electrónica Colombia | e-Misión — Avalado DIAN',
+  title: 'Facturación Electrónica Colombia | e-Misión — Autorizado DIAN',
   description:
-    'Emite facturas electrónicas desde $120.000/año. +10.000 empresas confían en e-Misión. Habilitación DIAN en 48h. Nómina, POS y SG-SST.',
+    'Emite facturas electrónicas desde $120.000/año. Proveedor autorizado por la DIAN. Habilitación en 48h. Nómina, POS y SG-SST.',
   keywords: [
     'facturación electrónica Colombia',
     'proveedor DIAN',
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     google: '2Vazc4p1s5kKzTUMCZzFpZyFz7EX_zX-70IKtGDvC3E',
   },
   openGraph: {
-    title: 'Facturación Electrónica Colombia | e-Misión — Avalado DIAN',
+    title: 'Facturación Electrónica Colombia | e-Misión — Autorizado DIAN',
     description:
-      'Emite facturas electrónicas desde $120.000/año. +10.000 empresas confían en e-Misión. Habilitación DIAN en 48h.',
+      'Emite facturas electrónicas desde $120.000/año. Proveedor autorizado por la DIAN. Habilitación en 48h.',
     url: 'https://landing.emision.co',
     siteName: 'e-Misión',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'e-Misión — Facturación Electrónica' }],
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Facturación Electrónica Colombia | e-Misión',
-    description: 'Emite facturas electrónicas desde $120.000/año. Avalado por la DIAN.',
+    description: 'Emite facturas electrónicas desde $120.000/año. Autorizado por la DIAN.',
     images: ['/og-image.jpg'],
   },
   alternates: { canonical: 'https://ventas.emision.co' },

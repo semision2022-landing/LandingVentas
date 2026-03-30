@@ -74,7 +74,7 @@ export default function HeroSection() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold"
                 style={{ backgroundColor: 'rgba(0,208,255,0.12)', color: 'var(--cyan)', border: '1px solid rgba(0,208,255,0.25)' }}
               >
-                <ShieldCheck size={13} /> Proveedor oficial avalado por la DIAN
+                <ShieldCheck size={13} /> Proveedor autorizado por la DIAN
               </span>
             </motion.div>
             <LiveCounter />
@@ -95,8 +95,8 @@ export default function HeroSection() {
               variants={itemVariants}
               className="text-base md:text-lg text-white/75 leading-relaxed mb-7 max-w-xl"
             >
-              e-Misión es el software de facturación electrónica que más de{' '}
-              <strong className="text-white">10.000 empresas colombianas</strong>{' '}
+              e-Misión es el software de facturación electrónica que{' '}
+              <strong className="text-white">cada vez más empresas colombianas</strong>{' '}
               usan para cumplir con la DIAN.{' '}
               <strong className="text-white">Habilitación en 48 horas. Desde $120.000/año.</strong>
             </motion.p>
@@ -124,7 +124,7 @@ export default function HeroSection() {
             {/* Mini trust indicators */}
             <motion.div variants={itemVariants} className="flex flex-wrap gap-x-6 gap-y-2">
               {[
-                { icon: Users, text: '+10.000 empresas activas' },
+                { icon: Users, text: 'Empresas activas creciendo' },
                 { icon: Clock, text: 'Habilitación en 48h garantizada' },
                 { icon: ShieldCheck, text: 'Sin cláusula de permanencia' },
               ].map((item) => {
@@ -158,7 +158,7 @@ export default function HeroSection() {
                   <Star key={i} size={16} fill="#F59E0B" className="text-amber-400" />
                 ))}
               </div>
-              <div className="text-white/50 text-xs mt-1">4.9★ · +200 reseñas verificadas</div>
+              <div className="text-white/50 text-xs mt-1">4.9★ · Clientes satisfechos</div>
             </div>
 
             {/* Testimonials mini */}
@@ -189,8 +189,8 @@ export default function HeroSection() {
               className="rounded-xl px-4 py-3 text-center"
               style={{ background: 'rgba(0,208,255,0.1)', border: '1px solid rgba(0,208,255,0.2)' }}
             >
-              <span className="text-sm font-bold" style={{ color: 'var(--cyan)' }}>Desde 2018</span>
-              <span className="text-white/50 text-xs ml-2">en el mercado colombiano</span>
+              <span className="text-sm font-bold" style={{ color: 'var(--cyan)' }}>7 años en el mercado</span>
+              <span className="text-white/50 text-xs ml-2">facturando con Colombia desde 2019</span>
             </div>
           </motion.div>
         </div>

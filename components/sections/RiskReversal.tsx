@@ -125,7 +125,7 @@ export default function RiskReversal() {
           <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium"
             style={{ backgroundColor: 'white', border: '1px solid var(--gray-border)', color: 'var(--gray)' }}>
             <ShieldCheck size={16} style={{ color: 'var(--green)' }} />
-            Proveedor avalado por la DIAN desde 2018 · +10.000 empresas activas
+            Proveedor autorizado por la DIAN desde 2019 · cada vez más empresas activas
           </div>
         </motion.div>
       </div>

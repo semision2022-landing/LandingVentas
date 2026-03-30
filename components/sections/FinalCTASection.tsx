@@ -77,7 +77,7 @@ export default function FinalCTASection() {
             <span style={{ color: 'var(--cyan)' }}>DIAN para siempre</span>
           </h2>
           <p className="text-white/65 text-lg mb-8 max-w-2xl mx-auto">
-            Más de 10.000 empresas ya facturan legal y sin complicaciones. La habilitación es gratis y en 48 horas.
+            Cada vez más empresas ya facturan legal y sin complicaciones. La habilitación es gratis y en 48 horas.
           </p>
 
           {/* Countdown */}

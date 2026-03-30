@@ -6,7 +6,7 @@ import { X, ArrowRight } from 'lucide-react'
 const messages = [
   { emoji: '🔥', text: 'Habilitación DIAN', highlight: 'GRATIS', suffix: 'en tu plan · Solo por este mes' },
   { emoji: '⚡', text: 'Activa hoy,', highlight: 'factura mañana.', suffix: 'Desde $120.000/año' },
-  { emoji: '✓', text: '+10.000 empresas ya confían en e-Misión.', highlight: 'Únete hoy', suffix: '→' },
+  { emoji: '✓', text: 'Cada vez más empresas confían en e-Misión.', highlight: 'Únete hoy', suffix: '→' },
 ]
 
 export default function AnnouncementBar() {
