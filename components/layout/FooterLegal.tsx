@@ -17,7 +17,7 @@ const policies = [
   {
     label: 'Política de devoluciones',
     shortLabel: 'Política de devoluciones',
-    pdf: '/POLÍTICA DE GARANTÍA RETRACTO O DEVOLUCIONES.pdf',
+    pdf: '/politica-devoluciones.pdf',
   },
 ]
 

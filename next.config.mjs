@@ -38,7 +38,16 @@ const nextConfig = {
         ],
       },
       {
-        // Security headers on all pages
+        // PDFs — permitir embed desde el mismo origen (modal iframe)
+        source: '/:path*.pdf',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Disposition', value: 'inline' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
+        ],
+      },
+      {
+        // Security headers on all pages (PDFs handled above)
         source: '/(.*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
