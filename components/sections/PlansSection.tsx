@@ -137,7 +137,7 @@ export default function PlansSection({ wcProducts = [] }: PlansSectionProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 [&>*:last-child:nth-child(4n+1)]:xl:col-start-2 [&>*:last-child:nth-child(4n+1)]:xl:col-span-2"
             >
               {billingPlans.map((plan) => {
                 const wcInfo = wcProducts.find((p) => p.id === plan.wcProductId)
@@ -161,6 +161,7 @@ export default function PlansSection({ wcProducts = [] }: PlansSectionProps) {
                 )
               })}
             </motion.div>
+
           ) : (
             <motion.div
               key="integral"

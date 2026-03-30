@@ -87,10 +87,33 @@ export default function PlanCard({ name, price, productId = null, badge, highlig
           <span className="text-sm font-medium ml-1" style={{ color: 'var(--gray)' }}>/año</span>
         </div>
 
-        {/* Features */}
         <ul className="flex flex-col gap-2.5 mb-6 flex-1">
           {features.map((feature, i) => {
-            const isNegative = feature.toLowerCase().includes('no incluye')
+            const isNoDian = feature.toLowerCase().includes('no incluye habilitación dian')
+            const isNegative = feature.toLowerCase().includes('no incluye') && !isNoDian
+            // Promo especial: tachado + badge DIAN gratis
+            if (isNoDian) {
+              return (
+                <li key={i} className="flex flex-col gap-1 text-sm">
+                  {/* Tachado */}
+                  <span className="flex items-start gap-2">
+                    <X size={14} className="mt-0.5 shrink-0" style={{ color: '#CBD5E1' }} />
+                    <span style={{ color: '#CBD5E1', textDecoration: 'line-through', fontSize: '0.8rem' }}>
+                      {feature.replace('No incluye', 'No incluye')}
+                    </span>
+                  </span>
+                  {/* Promo DIAN gratis */}
+                  <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold"
+                    style={{ backgroundColor: 'rgba(87,150,1,0.1)', color: '#3d6b01' }}>
+                    🎁 Habilitación DIAN GRATIS
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                      style={{ backgroundColor: '#F97316', color: 'white' }}>
+                      TIEMPO LIMITADO
+                    </span>
+                  </span>
+                </li>
+              )
+            }
             return (
               <li key={i} className="flex items-start gap-2 text-sm">
                 {isNegative ? (

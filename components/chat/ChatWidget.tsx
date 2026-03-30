@@ -254,8 +254,18 @@ export default function ChatWidget() {
     if (!leadForm.phone.trim() || leadForm.phone.replace(/\D/g, '').length < 7) errs.phone = 'Teléfono inválido'
     if (Object.keys(errs).length > 0) { setLeadErrors(errs); return }
     setLeadLoading(true)
-    await initConversation(leadForm)
+    const convId = await initConversation({ ...leadForm, lead_source: 'chatbot' } as Parameters<typeof initConversation>[0])
     fbEvent('Contact', { content_name: 'Chatbot Pre-chat Form' }, generateEventId())
+
+    // Auto-asignar al siguiente asesor en rotación
+    if (convId) {
+      fetch('/api/leads/assign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId: convId, source: 'chatbot' }),
+      }).catch(() => {}) // fire-and-forget
+    }
+
     setPreChatDone(true)
     setLeadLoading(false)
     setTimeout(() => inputRef.current?.focus(), 300)

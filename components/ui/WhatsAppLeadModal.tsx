@@ -42,14 +42,24 @@ export default function WhatsAppLeadModal({ isOpen, onClose }: Props) {
     try {
       // Save lead to Supabase conversations table
       const supabase = createClient()
-      await supabase.from('conversations').insert({
+      const { data: inserted } = await supabase.from('conversations').insert({
         session_id: `wa_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         status: 'closed',
         visitor_name: form.name.trim(),
         visitor_email: form.email.trim().toLowerCase(),
         visitor_phone: form.phone.trim(),
         plan_interest: form.plan || null,
-      })
+        lead_source: 'whatsapp',
+      }).select('id').single()
+
+      // Auto-asignar al siguiente asesor en rotación
+      if (inserted?.id) {
+        fetch('/api/leads/assign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId: inserted.id, source: 'whatsapp' }),
+        }).catch(() => {}) // fire-and-forget, no bloqueamos el flujo WA
+      }
 
       // Facebook Contact event
       const eventId = generateEventId()

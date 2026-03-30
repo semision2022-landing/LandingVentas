@@ -140,10 +140,21 @@ export default function ConversationsPage() {
 
   const loadConversations = useCallback(async () => {
     const supabase = createAuthClient()
-    let q = supabase.from('conversations').select('*').order('created_at', { ascending: false })
+    // Con RLS activo, Supabase ya filtra automáticamente:
+    // - admins reciben todas las conversaciones
+    // - comerciales solo reciben las assigned_to = su UUID
+    let q = supabase
+      .from('conversations')
+      .select('*, agents!assigned_to(name)')
+      .order('created_at', { ascending: false })
     if (filter !== 'all') q = q.eq('status', filter)
     const { data } = await q
-    setConversations((data ?? []) as Conversation[])
+    // Mapear el join del nombre del agente
+    const mapped = (data ?? []).map((row: Record<string, unknown> & { agents?: { name: string } | null }) => ({
+      ...row,
+      agent_name: row.agents?.name ?? row.assigned_agent ?? null,
+    }))
+    setConversations(mapped as Conversation[])
     setLoading(false)
   }, [filter])
 
@@ -494,7 +505,8 @@ export default function ConversationsPage() {
               { label: 'Email', value: activeConv.visitor_email, icon: <Mail size={13} />, href: activeConv.visitor_email ? `mailto:${activeConv.visitor_email}` : undefined },
               { label: 'Teléfono', value: activeConv.visitor_phone, icon: <Phone size={13} />, href: activeConv.visitor_phone ? `https://wa.me/57${activeConv.visitor_phone.replace(/\D/g, '')}` : undefined },
               { label: 'Plan de interés', value: activeConv.plan_interest },
-              { label: 'Agente asignado', value: activeConv.assigned_agent ?? '—' },
+              { label: 'Fuente', value: activeConv.lead_source === 'chatbot' ? '🤖 Chatbot' : activeConv.lead_source === 'whatsapp' ? '💬 WhatsApp' : '—' },
+              { label: 'Asesor asignado', value: (activeConv as Conversation).agent_name ?? activeConv.assigned_agent ?? '—' },
             ].map((item) => (
               <div key={item.label}>
                 <p className="text-[10px] font-medium uppercase tracking-wide mb-1" style={{ color: '#94A3B8' }}>{item.label}</p>

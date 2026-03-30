@@ -36,7 +36,7 @@ export default function LeadsPage() {
       setLoading(true)
       let q = supabase
         .from('conversations')
-        .select('*')
+        .select('*, agents!assigned_to(name)')
         .not('visitor_email', 'is', null)
         .order(sortKey, { ascending: sortDir === 'asc' })
 
@@ -52,7 +52,11 @@ export default function LeadsPage() {
       }
 
       const { data } = await q
-      setLeads((data ?? []) as Conversation[])
+      const mapped = (data ?? []).map((row: Record<string, unknown> & { agents?: { name: string } | null }) => ({
+        ...row,
+        agent_name: row.agents?.name ?? row.assigned_agent ?? null,
+      }))
+      setLeads(mapped as Conversation[])
       setLoading(false)
     }
     load()
@@ -79,10 +83,12 @@ export default function LeadsPage() {
   }
 
   const exportCSV = () => {
-    const header = ['Nombre', 'Email', 'Teléfono', 'Plan', 'Estado', 'Fecha'].join(',')
+    const header = ['Nombre', 'Email', 'Teléfono', 'Plan', 'Asesor', 'Atendido', 'Fuente', 'Fecha'].join(',')
     const rows = filtered.map((l) =>
       [l.visitor_name ?? '', l.visitor_email ?? '', l.visitor_phone ?? '',
-       l.plan_interest ?? '', l.status, formatDate(l.created_at)].map((v) => `"${v}"`).join(',')
+       l.plan_interest ?? '', (l as Conversation).agent_name ?? l.assigned_agent ?? '',
+       l.attended ? 'Sí' : 'No', l.lead_source ?? '',
+       formatDate(l.created_at)].map((v) => `"${v}"`).join(',')
     )
     const csv = [header, ...rows].join('\n')
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv; charset=utf-8' })
@@ -159,8 +165,10 @@ export default function LeadsPage() {
                   { label: 'Email', key: null },
                   { label: 'Teléfono', key: null },
                   { label: 'Plan', key: 'plan_interest' as const },
-                  { label: 'Fecha', key: 'created_at' as const },
+                  { label: 'Asesor asignado', key: null },
                   { label: 'Estado', key: null },
+                  { label: 'Fuente', key: null },
+                  { label: 'Fecha', key: 'created_at' as const },
                   { label: 'Acciones', key: null },
                 ].map((col) => (
                   <th key={col.label}
@@ -209,14 +217,31 @@ export default function LeadsPage() {
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
                       {lead.plan_interest ?? '—'}
                     </td>
+                    {/* Asesor asignado */}
+                    <td className="px-4 py-3 text-xs" style={{ color: '#18224C' }}>
+                      {(lead as Conversation).agent_name ?? lead.assigned_agent ?? (
+                        <span style={{ color: '#94A3B8' }}>Sin asignar</span>
+                      )}
+                    </td>
+                    {/* Estado / Atendido */}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                          style={{ backgroundColor: cfg.bg, color: cfg.color }}>
+                          {cfg.label}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                          style={{ backgroundColor: lead.attended ? '#F0FDF4' : '#FFF7ED', color: lead.attended ? '#579601' : '#EA580C' }}>
+                          {lead.attended ? '✅ Atendido' : '⏳ Pendiente'}
+                        </span>
+                      </div>
+                    </td>
+                    {/* Fuente */}
+                    <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
+                      {lead.lead_source === 'chatbot' ? '🤖 Chat' : lead.lead_source === 'whatsapp' ? '💬 WhatsApp' : '—'}
+                    </td>
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
                       {formatDate(lead.created_at)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-[11px] px-2 py-0.5 rounded-full font-medium"
-                        style={{ backgroundColor: cfg.bg, color: cfg.color }}>
-                        {cfg.label}
-                      </span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">

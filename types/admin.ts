@@ -10,13 +10,17 @@ export interface Conversation {
   visitor_email: string | null
   visitor_phone: string | null
   plan_interest: string | null
-  assigned_agent: string | null
+  assigned_agent: string | null   // nombre visible (legado)
+  assigned_to: string | null      // UUID del agente asignado (nuevo)
+  attended: boolean               // si el comercial ya lo atendió
+  lead_source: string | null      // 'chatbot' | 'whatsapp'
   unread_count: number
   closed_at: string | null
   created_at: string
-  // joined
+  // joined via select
   last_message?: string
   last_message_at?: string
+  agent_name?: string             // nombre del agente (join en queries)
 }
 
 export interface Message {

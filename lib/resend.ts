@@ -83,3 +83,61 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams) {
     }),
   ])
 }
+
+// ─── Lead assignment notification ────────────────────────────────────────────
+interface LeadAssignmentParams {
+  agentName: string
+  agentEmail: string
+  leadName: string
+  leadEmail: string
+  leadPhone: string
+  planInterest: string
+  source: string
+  adminUrl: string
+}
+
+export async function sendLeadAssignmentEmail(params: LeadAssignmentParams) {
+  const { agentName, agentEmail, leadName, leadEmail, leadPhone, planInterest, source, adminUrl } = params
+  const sourceLabel = source === 'chatbot' ? '🤖 Chatbot Laura' : '💬 Formulario WhatsApp'
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#18224C;">
+      <div style="background:#18224C;padding:28px 32px;border-radius:12px 12px 0 0;">
+        <h1 style="color:#00D0FF;font-size:22px;margin:0;">✈ e-Misión</h1>
+        <p style="color:rgba(255,255,255,0.65);margin-top:6px;font-size:13px;">Sistema de gestión de leads</p>
+      </div>
+      <div style="background:#f8fafc;padding:28px 32px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;">
+        <h2 style="font-size:18px;margin-bottom:6px;">🎯 Nuevo lead asignado, ${agentName}</h2>
+        <p style="color:#64748b;font-size:13px;margin-bottom:24px;">
+          Se te ha asignado automáticamente un nuevo lead. Por favor contáctalo a la brevedad.
+        </p>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:20px;margin-bottom:24px;">
+          <h3 style="font-size:13px;font-weight:600;margin-bottom:14px;color:#18224C;text-transform:uppercase;letter-spacing:0.05em;">Información del lead</h3>
+          <table style="width:100%;font-size:13px;color:#64748b;border-collapse:collapse;">
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;width:130px;">Nombre</td><td>${leadName}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Email</td><td><a href="mailto:${leadEmail}" style="color:#18224C;">${leadEmail}</a></td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Teléfono</td><td><a href="https://wa.me/57${leadPhone.replace(/\D/g, '')}" style="color:#25D366;">${leadPhone}</a></td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Plan de interés</td><td>${planInterest}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Fuente</td><td>${sourceLabel}</td></tr>
+          </table>
+        </div>
+        <a href="${adminUrl}" style="display:block;background:#18224C;color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:20px;">
+          👁 Ver lead en el panel →
+        </a>
+        <p style="font-size:12px;color:#94a3b8;text-align:center;">© 2026 e-Misión — Nodexum S.A.S. · Envigado, Antioquia</p>
+      </div>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: 'e-Misión Leads <noreply@emision.co>',
+      to: agentEmail,
+      subject: `🎯 Nuevo lead asignado — ${leadName}`,
+      html,
+    })
+  } catch (err) {
+    console.error('[resend] sendLeadAssignmentEmail error:', err)
+  }
+}
+
