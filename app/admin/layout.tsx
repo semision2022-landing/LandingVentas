@@ -76,7 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <Toaster position="top-right" toastOptions={{ style: { fontFamily: 'Poppins, sans-serif', fontSize: '13px' } }} />
 
       {/* Sidebar desktop */}
-      <Sidebar agentName={agent?.name} agentEmail={agent?.email} />
+      <Sidebar agentName={agent?.name} agentEmail={agent?.email} agentRole={agent?.role} />
 
       {/* Content */}
       <div className="flex-1 flex flex-col min-w-0 lg:ml-60">

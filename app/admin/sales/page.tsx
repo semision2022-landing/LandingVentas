@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { createAuthClient } from '@/lib/supabase-auth'
 import { Search, Download, TrendingUp, ShoppingBag, DollarSign, Award } from 'lucide-react'
 import type { Sale } from '@/types/admin'
@@ -17,6 +18,7 @@ function formatCOP(n: number) {
 const PAGE_SIZE = 20
 
 export default function SalesPage() {
+  const router = useRouter()
   const [sales, setSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -27,6 +29,14 @@ export default function SalesPage() {
     const supabase = createAuthClient()
     const load = async () => {
       setLoading(true)
+
+      // Guard: solo admins pueden ver ventas
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        const { data: agent } = await supabase.from('agents').select('role').eq('id', session.user.id).single()
+        if (agent?.role === 'agent') { router.replace('/admin'); return }
+      }
+
       let q = supabase.from('sales').select('*').eq('status', 'completed').order('created_at', { ascending: false })
       const now = new Date()
       if (period === 'today') q = q.gte('created_at', now.toISOString().split('T')[0])
@@ -43,7 +53,8 @@ export default function SalesPage() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sales' }, () => load())
       .subscribe()
     return () => { supabase2.removeChannel(channel) }
-  }, [period])
+  }, [period, router])
+
 
   const filtered = useMemo(() => sales.filter((s) => {
     const q = search.toLowerCase()

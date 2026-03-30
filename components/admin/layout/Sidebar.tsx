@@ -6,23 +6,34 @@ import {
   LayoutDashboard, MessageSquare, Users, Settings, LogOut, ShoppingBag, BarChart2,
 } from 'lucide-react'
 
-const navItems = [
-  { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { label: 'Chat Center', href: '/admin/conversations', icon: MessageSquare },
-  { label: 'Leads', href: '/admin/leads', icon: Users },
-  { label: 'Ventas', href: '/admin/sales', icon: ShoppingBag },
-  { label: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
-  { label: 'Configuración', href: '/admin/settings', icon: Settings },
+const adminNavItems = [
+  { label: 'Dashboard',     href: '/admin',               icon: LayoutDashboard },
+  { label: 'Chat Center',   href: '/admin/conversations',  icon: MessageSquare },
+  { label: 'Leads',         href: '/admin/leads',          icon: Users },
+  { label: 'Ventas',        href: '/admin/sales',          icon: ShoppingBag },
+  { label: 'Analytics',     href: '/admin/analytics',      icon: BarChart2 },
+  { label: 'Configuración', href: '/admin/settings',       icon: Settings },
+]
+
+// Comerciales solo ven estas 3 secciones
+const agentNavItems = [
+  { label: 'Dashboard',   href: '/admin',               icon: LayoutDashboard },
+  { label: 'Chat Center', href: '/admin/conversations',  icon: MessageSquare },
+  { label: 'Leads',       href: '/admin/leads',          icon: Users },
 ]
 
 interface SidebarProps {
   agentName?: string
   agentEmail?: string
+  agentRole?: string   // 'admin' | 'agent'
 }
 
-export default function Sidebar({ agentName, agentEmail }: SidebarProps) {
+export default function Sidebar({ agentName, agentEmail, agentRole }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
+
+  const isAgent = agentRole === 'agent'
+  const navItems = isAgent ? agentNavItems : adminNavItems
 
   const handleLogout = async () => {
     const supabase = createAuthClient()
@@ -35,7 +46,7 @@ export default function Sidebar({ agentName, agentEmail }: SidebarProps) {
     href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 
   const initials = agentName
-    ? agentName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
+    ? agentName.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
     : '?'
 
   return (
@@ -48,7 +59,7 @@ export default function Sidebar({ agentName, agentEmail }: SidebarProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="e-Misión" className="h-12 w-auto" />
         <p className="text-xs mt-1.5 font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Panel Administrativo
+          {isAgent ? 'Panel Comercial' : 'Panel Administrativo'}
         </p>
       </div>
 
@@ -80,17 +91,20 @@ export default function Sidebar({ agentName, agentEmail }: SidebarProps) {
         })}
       </nav>
 
-      {/* Agent */}
+      {/* Agent info */}
       <div className="px-3 py-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
         <div className="flex items-center gap-3 px-2 mb-3">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-            style={{ backgroundColor: '#00D0FF', color: '#18224C' }}
+            style={{ backgroundColor: isAgent ? '#00D0FF' : '#F97316', color: '#18224C' }}
           >
             {initials}
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-white truncate">{agentName ?? 'Agente'}</p>
+            <p className="text-[10px] truncate font-medium" style={{ color: isAgent ? '#00D0FF' : '#F97316' }}>
+              {isAgent ? '🛡 Asesor Comercial' : '👑 Administrador'}
+            </p>
             <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
               {agentEmail ?? ''}
             </p>
