@@ -34,14 +34,50 @@ export default function CertificationsSection() {
   return (
     <section className="py-10 border-y" style={{ borderColor: '#E2E8F0', backgroundColor: '#FAFBFF' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Label */}
-        <p className="text-center text-xs font-semibold uppercase tracking-widest mb-8"
+        <p className="text-center text-xs font-semibold uppercase tracking-widest mb-6"
           style={{ color: '#94A3B8' }}>
           Certificaciones y reconocimientos
         </p>
 
-        {/* Seals */}
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        {/* ── MOBILE: carrusel deslizable horizontal ─────────────────── */}
+        <div className="md:hidden">
+          <div
+            className="flex items-center gap-8 overflow-x-auto pb-4"
+            style={{
+              scrollbarWidth: 'none',        /* Firefox */
+              msOverflowStyle: 'none',        /* IE / Edge */
+              WebkitOverflowScrolling: 'touch',
+              paddingLeft: '1rem',
+              paddingRight: '1rem',
+            }}
+          >
+            {seals.map((seal) => (
+              <div
+                key={seal.alt}
+                className="shrink-0 flex items-center justify-center"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={seal.src}
+                  alt={seal.alt}
+                  width={seal.width}
+                  className="h-auto object-contain"
+                  style={{ maxHeight: '64px' }}
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+          {/* Indicador de scroll */}
+          <p className="text-center text-[10px] mt-1" style={{ color: '#CBD5E1' }}>
+            ← desliza para ver más →
+          </p>
+        </div>
+
+        {/* ── DESKTOP: fila centrada con efectos hover ────────────────── */}
+        <div className="hidden md:flex flex-wrap items-center justify-center gap-10 lg:gap-14">
           {seals.map((seal, i) => (
             <motion.div
               key={seal.alt}
@@ -63,6 +99,7 @@ export default function CertificationsSection() {
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   )
