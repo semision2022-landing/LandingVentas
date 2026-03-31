@@ -42,7 +42,7 @@ export default function LeadsPage() {
       let q = supabase
         .from('conversations')
         .select('*, agents!assigned_to(name)')
-        .not('visitor_email', 'is', null)
+        .or('visitor_email.not.is.null,visitor_phone.not.is.null,visitor_name.not.is.null,lead_source_type.eq.manual')
         .order(sortKey, { ascending: sortDir === 'asc' })
 
       const now = new Date()
