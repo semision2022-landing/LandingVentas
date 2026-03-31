@@ -29,7 +29,7 @@ const seals = [
     width: 170,
   },
   {
-    src: '/logo RADIAN.png',
+    src: '/LogoRADIAN.png',
     alt: 'RADIAN — Factura Electrónica como Título Valor',
     width: 120,
   },

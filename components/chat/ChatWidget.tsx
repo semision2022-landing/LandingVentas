@@ -184,7 +184,7 @@ export default function ChatWidget() {
 
     // Contact event on first user message (once per session)
     if (!hasTrackedContact) {
-      fbEvent('Contact', { content_name: 'Chatbot Laura' }, generateEventId())
+      fbEvent('Contact', { content_name: 'Chatbot Lía' }, generateEventId())
       setHasTrackedContact(true)
     }
 
@@ -470,11 +470,11 @@ export default function ChatWidget() {
               {/* Header */}
               <div className="flex items-center gap-3 px-4 py-3.5 shrink-0" style={{ backgroundColor: 'var(--navy)' }}>
                 <div className="relative shrink-0">
-                  <img src="/laura-avatar.png" alt="Laura" className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20" />
+                  <img src="/laura-avatar.png" alt="Lía" className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20" />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 ring-2 ring-[#18224C]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white leading-tight">Laura · Asesora e-Misión</p>
+                  <p className="text-sm font-semibold text-white leading-tight">Lía · Asesora e-Misión</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-xs text-white/70">En línea</span>
                     {isTransferred && (
