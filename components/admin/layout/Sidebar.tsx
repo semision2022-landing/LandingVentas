@@ -18,8 +18,9 @@ const adminNavItems = [
 // Comerciales solo ven estas 3 secciones
 const agentNavItems = [
   { label: 'Dashboard',   href: '/admin',               icon: LayoutDashboard },
-  { label: 'Chat Center', href: '/admin/conversations',  icon: MessageSquare },
-  { label: 'Leads',       href: '/admin/leads',          icon: Users },
+  { label: 'Chat Center',   href: '/admin/conversations',  icon: MessageSquare },
+  { label: 'Leads',         href: '/admin/leads',          icon: Users },
+  { label: 'Configuración', href: '/admin/settings',       icon: Settings },
 ]
 
 interface SidebarProps {
