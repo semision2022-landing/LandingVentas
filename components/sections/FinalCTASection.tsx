@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight, MessageCircle, CheckCircle } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 
 // Already removed useCountdown hook
