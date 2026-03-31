@@ -69,14 +69,14 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams) {
   await Promise.all([
     // Customer confirmation
     resend.emails.send({
-      from: 'e-Misión <noreply@emision.co>',
+      from: 'e-Misión <noreply@ventas.emision.co>',
       to: customerEmail,
       subject: `✅ Confirmación de tu orden — ${planName}`,
       html,
     }),
     // Internal notification
     resend.emails.send({
-      from: 'e-Misión Sistema <noreply@emision.co>',
+      from: 'e-Misión Sistema <noreply@ventas.emision.co>',
       to: NOTIFICATION_EMAILS,
       subject: `🛍 Nueva orden: ${planName} — ${customerName}`,
       html: internalHtml,
@@ -131,7 +131,7 @@ export async function sendLeadAssignmentEmail(params: LeadAssignmentParams) {
 
   try {
     await resend.emails.send({
-      from: 'e-Misión Leads <noreply@emision.co>',
+      from: 'e-Misión Leads <noreply@ventas.emision.co>',
       to: agentEmail,
       subject: `🎯 Nuevo lead asignado — ${leadName}`,
       html,
