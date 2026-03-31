@@ -35,7 +35,7 @@ function CountUpNumber({ target, label }: CountUpProps) {
 
   return (
     <div ref={ref} className="text-center">
-      <div className="text-4xl md:text-5xl font-extrabold mb-2" style={{ color: 'var(--navy)' }}>
+      <div className={`font-extrabold mb-2 ${displayed.length > 8 ? 'text-2xl md:text-3xl leading-tight' : 'text-4xl md:text-5xl'}`} style={{ color: 'var(--navy)' }}>
         {displayed}
       </div>
       <p className="text-sm md:text-base font-medium" style={{ color: 'var(--gray)' }}>
@@ -46,7 +46,7 @@ function CountUpNumber({ target, label }: CountUpProps) {
 }
 
 const metrics = [
-  { target: 'Creciendo', label: 'Empresas activas' },
+  { target: 'Más empresas activas', label: 'Creciendo' },
   { target: '+140M', label: 'Facturas procesadas ante la DIAN' },
   { target: '48h', label: 'Habilitación DIAN' },
   { target: '7+', label: 'Años en el mercado' },
