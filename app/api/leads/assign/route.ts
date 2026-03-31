@@ -45,8 +45,15 @@ export async function POST(req: NextRequest) {
       .update({ last_index: nextIndex })
       .eq('id', 1)
 
-    // 4. Asignar el lead
-    const { data: conversation, error: convErr } = await supabaseAdmin
+    // 4. Obtener datos del lead
+    const { data: convData } = await supabaseAdmin
+      .from('conversations')
+      .select('visitor_name, visitor_email, visitor_phone, plan_interest')
+      .eq('id', conversationId)
+      .single()
+
+    // 5. Asignar el lead en BD
+    const { error: convErr } = await supabaseAdmin
       .from('conversations')
       .update({
         assigned_to: assignedAgent.id,
@@ -54,22 +61,20 @@ export async function POST(req: NextRequest) {
         lead_source: source ?? 'whatsapp',
       })
       .eq('id', conversationId)
-      .select('visitor_name, visitor_email, visitor_phone, plan_interest')
-      .single()
 
     if (convErr) {
       console.error('[assign-lead] Error actualizando conversación:', convErr)
       return NextResponse.json({ error: 'Error asignando lead' }, { status: 500 })
     }
 
-    // 5. Notificar al asesor por email
+    // 6. Notificar al asesor por email
     await sendLeadAssignmentEmail({
       agentName:    assignedAgent.name,
       agentEmail:   assignedAgent.email,
-      leadName:     conversation?.visitor_name  ?? 'Visitante',
-      leadEmail:    conversation?.visitor_email ?? '—',
-      leadPhone:    conversation?.visitor_phone ?? '—',
-      planInterest: conversation?.plan_interest ?? '—',
+      leadName:     convData?.visitor_name  ?? 'Visitante',
+      leadEmail:    convData?.visitor_email ?? '—',
+      leadPhone:    convData?.visitor_phone ?? '—',
+      planInterest: convData?.plan_interest ?? '—',
       source:       source ?? 'whatsapp',
       adminUrl:     `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://ventas.emision.co'}/admin/conversations`,
     })
