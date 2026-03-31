@@ -42,7 +42,9 @@ export default function WhatsAppLeadModal({ isOpen, onClose }: Props) {
     try {
       // Save lead to Supabase conversations table
       const supabase = createClient()
-      const { data: inserted } = await supabase.from('conversations').insert({
+      const leadId = crypto.randomUUID()
+      const { error } = await supabase.from('conversations').insert({
+        id: leadId,
         session_id: `wa_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         status: 'closed',
         visitor_name: form.name.trim(),
@@ -50,14 +52,14 @@ export default function WhatsAppLeadModal({ isOpen, onClose }: Props) {
         visitor_phone: form.phone.trim(),
         plan_interest: form.plan || null,
         lead_source: 'whatsapp',
-      }).select('id').single()
+      })
 
       // Auto-asignar al siguiente asesor en rotación
-      if (inserted?.id) {
+      if (!error) {
         fetch('/api/leads/assign', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ conversationId: inserted.id, source: 'whatsapp' }),
+          body: JSON.stringify({ conversationId: leadId, source: 'whatsapp' }),
         }).catch(() => {}) // fire-and-forget, no bloqueamos el flujo WA
       }
 

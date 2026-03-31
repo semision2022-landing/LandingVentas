@@ -151,15 +151,15 @@ export default function ChatWidget() {
     if (conversationId) return conversationId
     try {
       const supabase = createClient()
-      const insert: Record<string, string> = { session_id: sessionId, status: 'bot' }
+      const insert: Record<string, string> = { id: crypto.randomUUID(), session_id: sessionId, status: 'bot' }
       if (lead) {
         if (lead.name) insert.visitor_name = lead.name
         if (lead.email) insert.visitor_email = lead.email.toLowerCase()
         if (lead.phone) insert.visitor_phone = lead.phone
         if (lead.plan && lead.plan !== 'No sé aún') insert.plan_interest = lead.plan
       }
-      const { data } = await supabase.from('conversations').insert(insert).select('id').single()
-      if (data) { setConversationId(data.id); return data.id }
+      const { error } = await supabase.from('conversations').insert(insert)
+      if (!error) { setConversationId(insert.id); return insert.id }
     } catch { /* silent */ }
     return null
   }, [sessionId, conversationId])
