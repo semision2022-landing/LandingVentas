@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { createAuthClient } from '@/lib/supabase-auth'
-import { Search, Download, ExternalLink, MessageSquare, Filter } from 'lucide-react'
+import { Search, Download, ExternalLink, MessageSquare, Filter, Plus, Eye } from 'lucide-react'
 import type { Conversation } from '@/types/admin'
+import AddLeadModal from '@/components/admin/leads/AddLeadModal'
+import LeadDrawer from '@/components/admin/leads/LeadDrawer'
 
 type Period = 'all' | 'today' | 'week' | 'month'
 
@@ -29,6 +31,9 @@ export default function LeadsPage() {
   const [page, setPage] = useState(0)
   const [sortKey, setSortKey] = useState<'created_at' | 'visitor_name' | 'plan_interest'>('created_at')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const [addModalOpen, setAddModalOpen] = useState(false)
+  const [selectedLead, setSelectedLead] = useState<Conversation | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   useEffect(() => {
     const supabase = createAuthClient()
@@ -60,7 +65,7 @@ export default function LeadsPage() {
       setLoading(false)
     }
     load()
-  }, [period, sortKey, sortDir])
+  }, [period, sortKey, sortDir, refreshTrigger])
 
   const plans = useMemo(() => {
     const set = new Set(leads.map((l) => l.plan_interest).filter(Boolean) as string[])
@@ -116,6 +121,11 @@ export default function LeadsPage() {
           />
         </div>
         <div className="flex gap-2 flex-wrap">
+          <button onClick={() => setAddModalOpen(true)}
+            className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-all hover:-translate-y-0.5"
+            style={{ backgroundColor: '#579601', color: 'white' }}>
+            <Plus size={13} /> Agregar manual
+          </button>
           {/* Period filter */}
           {(['all', 'today', 'week', 'month'] as Period[]).map((p) => (
             <button key={p} onClick={() => { setPeriod(p); setPage(0) }}
@@ -238,13 +248,18 @@ export default function LeadsPage() {
                     </td>
                     {/* Fuente */}
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
-                      {lead.lead_source === 'chatbot' ? '🤖 Chat' : lead.lead_source === 'whatsapp' ? '💬 WhatsApp' : '—'}
+                      {lead.lead_source_type === 'manual' ? '✍️ Manual' : lead.lead_source === 'chatbot' ? '🤖 Chat' : lead.lead_source === 'whatsapp' ? '💬 WhatsApp' : '🌐 Landing'}
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
                       {formatDate(lead.created_at)}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
+                        <button onClick={() => setSelectedLead(lead)} title="Ver detalles"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+                          style={{ color: '#18224C' }}>
+                          <Eye size={13} />
+                        </button>
                         <a href={`/admin/conversations?id=${lead.id}`} title="Ver chat"
                           className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
                           style={{ color: '#18224C' }}>
@@ -288,6 +303,16 @@ export default function LeadsPage() {
           </div>
         )}
       </div>
+
+      <AddLeadModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onSuccess={() => { setAddModalOpen(false); setRefreshTrigger(t => t + 1) }}
+      />
+      <LeadDrawer
+        lead={selectedLead}
+        onClose={() => setSelectedLead(null)}
+      />
     </div>
   )
 }

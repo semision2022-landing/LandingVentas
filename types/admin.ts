@@ -21,6 +21,37 @@ export interface Conversation {
   last_message?: string
   last_message_at?: string
   agent_name?: string             // nombre del agente (join en queries)
+  // Nuevos campos para manual entry
+  lead_source_type?: 'landing' | 'manual'
+  added_by?: string | null        // agente que lo creó manualmente
+}
+
+export interface LeadLabel {
+  id: string
+  lead_id: string
+  label: string
+  color: string
+  created_at: string
+}
+
+export interface LeadNote {
+  id: string
+  lead_id: string
+  agent_id: string | null
+  content: string
+  created_at: string
+  // joined
+  agent_name?: string
+}
+
+export interface LeadTask {
+  id: string
+  lead_id: string
+  agent_id: string | null
+  title: string
+  due_date: string | null
+  completed: boolean
+  created_at: string
 }
 
 export interface Message {
