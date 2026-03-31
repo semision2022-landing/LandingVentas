@@ -27,14 +27,14 @@ const config: Config = {
           "25%": { transform: "translateY(-4px) rotate(-1deg)" },
           "75%": { transform: "translateY(4px) rotate(1deg)" },
         },
-        marqueeSlide: {
+        marqueeScroll: {
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(var(--marquee-offset))" },
+          "100%": { transform: "translateX(calc(-100% / 3))" },
         },
       },
       animation: {
         "wave": "wave 4s ease-in-out infinite",
-        "marquee": "marqueeSlide 6s ease-in-out infinite alternate",
+        "marquee": "marqueeScroll 35s linear infinite",
       },
     },
   },
