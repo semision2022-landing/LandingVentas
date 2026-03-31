@@ -1,7 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { X, FileText, ExternalLink, Download } from 'lucide-react'
+import { useEffect, useRef, Suspense, lazy } from 'react'
+import { X, FileText, Download } from 'lucide-react'
+
+// Carga el viewer solo en client (pdfjs usa APIs de browser)
+const PDFViewer = lazy(() => import('./PDFViewer'))
 
 interface PolicyModalProps {
   isOpen: boolean
@@ -13,7 +16,7 @@ interface PolicyModalProps {
 export default function PolicyModal({ isOpen, title, pdfPath, onClose }: PolicyModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const filename = pdfPath.split('/').pop() ?? ''
-  const iframeSrc = `/api/pdf?file=${encodeURIComponent(filename)}`
+  const apiSrc = `/api/pdf?file=${encodeURIComponent(filename)}`
 
   useEffect(() => {
     if (!isOpen) return
@@ -33,99 +36,63 @@ export default function PolicyModal({ isOpen, title, pdfPath, onClose }: PolicyM
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}
+      style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
       <div
         className="relative w-full sm:max-w-4xl bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
-        style={{ maxHeight: '92vh', height: '92vh' }}
+        style={{ maxHeight: '94vh', height: '94vh' }}
       >
-        {/* Header — igual en móvil y desktop */}
+        {/* Header */}
         <div
-          className="flex items-center justify-between px-5 py-4 shrink-0 border-b"
+          className="flex items-center justify-between px-5 py-3.5 shrink-0 border-b"
           style={{ borderColor: '#E2E8F0', backgroundColor: '#F8FAFC' }}
         >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(0,208,255,0.1)' }}>
-              <FileText size={18} style={{ color: '#00D0FF' }} />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+              style={{ backgroundColor: 'rgba(0,208,255,0.12)' }}>
+              <FileText size={16} style={{ color: '#00D0FF' }} />
             </div>
-            <div>
-              <p className="text-[10px] font-medium uppercase tracking-wide" style={{ color: '#94A3B8' }}>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: '#94A3B8' }}>
                 Documento legal
               </p>
-              <h3 className="text-sm font-bold leading-tight" style={{ color: '#18224C' }}>{title}</h3>
+              <h3 className="text-sm font-bold truncate" style={{ color: '#18224C' }}>{title}</h3>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2 shrink-0 ml-3">
             <a
               href={pdfPath}
               download
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition hover:opacity-80"
               style={{ backgroundColor: '#18224C', color: 'white' }}
             >
               <Download size={12} /> Descargar
             </a>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition hover:scale-110"
               style={{ backgroundColor: '#FEE2E2', color: '#EF4444' }}
               aria-label="Cerrar"
             >
-              <X size={16} strokeWidth={2.5} />
+              <X size={15} strokeWidth={2.5} />
             </button>
           </div>
         </div>
 
-        {/* ── MÓVIL: vista amigable con botones de acción ──────────────── */}
-        <div className="flex sm:hidden flex-col items-center justify-center flex-1 px-6 py-8 text-center gap-6">
-          {/* Icono decorativo */}
-          <div
-            className="w-20 h-20 rounded-3xl flex items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,208,255,0.08)', border: '2px dashed rgba(0,208,255,0.3)' }}
-          >
-            <FileText size={36} style={{ color: '#00D0FF' }} />
-          </div>
-
-          <div>
-            <h4 className="text-base font-bold mb-2" style={{ color: '#18224C' }}>{title}</h4>
-            <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>
-              Para leer este documento cómodamente, ábrelo en tu visor de PDF.
-            </p>
-          </div>
-
-          {/* Botón principal — abre el PDF en pantalla completa nativa */}
-          <a
-            href={iframeSrc}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold transition-all active:scale-95"
-            style={{ backgroundColor: '#18224C', color: 'white' }}
-          >
-            <ExternalLink size={16} />
-            Ver documento completo
-          </a>
-
-          {/* Descarga secundaria */}
-          <a
-            href={pdfPath}
-            download
-            className="flex items-center gap-2 text-sm font-medium py-2"
-            style={{ color: '#94A3B8' }}
-          >
-            <Download size={14} />
-            Descargar PDF
-          </a>
-        </div>
-
-        {/* ── DESKTOP: iframe con viewer completo ─────────────────────── */}
-        <div className="hidden sm:flex flex-1 overflow-hidden">
-          <iframe
-            src={iframeSrc}
-            title={title}
-            className="w-full h-full border-0"
-            style={{ minHeight: 0, display: 'block' }}
-          />
+        {/* PDF Viewer — responsivo en móvil y desktop */}
+        <div className="flex-1 overflow-hidden">
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full" style={{ backgroundColor: '#525659' }}>
+              <div className="flex flex-col items-center gap-3 text-white/60">
+                <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+                <span className="text-xs">Cargando documento...</span>
+              </div>
+            </div>
+          }>
+            <PDFViewer src={apiSrc} />
+          </Suspense>
         </div>
       </div>
     </div>
