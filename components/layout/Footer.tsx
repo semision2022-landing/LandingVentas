@@ -7,6 +7,8 @@ const footerLinks = {
     { label: 'Facturación Electrónica', href: '#planes' },
     { label: 'Nómina Electrónica', href: '#planes' },
     { label: 'POS Electrónico', href: '#servicios' },
+    { label: 'Eventos Mercantiles', href: '#servicios' },
+    { label: 'Endoso', href: '#servicios' },
     { label: 'SG-SST', href: '#servicios' },
   ],
   legal: [

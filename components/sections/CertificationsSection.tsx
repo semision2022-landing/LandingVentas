@@ -1,12 +1,14 @@
 'use client'
 
+// Organizamos los logos para agrupar los circulares (ISO y RADIAN) al final o principio
 const seals = [
   { src: '/Logo Proveedor Tecnologico.png', alt: 'Proveedor Tecnológico DIAN', width: 90 },
-  { src: '/Fb Certification Iso 27001 2022.png', alt: 'ISO 27001:2022', width: 110 },
   { src: '/Oracle-Cloud-Emblem.png', alt: 'Oracle Cloud Partner', width: 100 },
   { src: '/sello1-1024x446.png', alt: 'Digital Business Network Alliance', width: 140 },
-  { src: '/SelloEmision-1024x448.png', alt: 'e-Misión Certified Service Providers', width: 150 },
-  { src: '/LogoRADIAN.png', alt: 'RADIAN', width: 100 },
+  { src: '/SelloEmision-1024x448.png', alt: 'e-Misión Certified Service Providers', width: 140 },
+  // Logos redondos agrupados
+  { src: '/Fb Certification Iso 27001 2022.png', alt: 'ISO 27001:2022', width: 80 },
+  { src: '/LogoRADIAN.png', alt: 'RADIAN', width: 80 },
 ]
 
 // Duplicamos para el loop infinito seamless
@@ -15,7 +17,7 @@ const track = [...seals, ...seals, ...seals]
 export default function CertificationsSection() {
   return (
     <section
-      className="relative py-12 overflow-hidden"
+      className="relative py-14 overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #0D1635 0%, #18224C 50%, #0A1628 100%)',
       }}
@@ -31,24 +33,24 @@ export default function CertificationsSection() {
 
       {/* Etiqueta */}
       <p
-        className="text-center text-[11px] font-bold uppercase tracking-[0.25em] mb-8 relative z-10"
-        style={{ color: 'rgba(0,208,255,0.6)' }}
+        className="text-center text-[11px] font-bold uppercase tracking-[0.25em] mb-10 relative z-10"
+        style={{ color: 'rgba(0,208,255,0.7)' }}
       >
-        ✦ Certificaciones &amp; Reconocimientos ✦
+        ✦ Certificaciones & Reconocimientos ✦
       </p>
 
       {/* Marquee wrapper */}
       <div className="relative z-10">
         {/* Fade izquierdo */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-20 md:w-36 z-20 pointer-events-none"
+          className="absolute left-0 top-0 bottom-0 w-16 md:w-32 z-20 pointer-events-none"
           style={{
             background: 'linear-gradient(to right, #0D1635, transparent)',
           }}
         />
         {/* Fade derecho */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-20 md:w-36 z-20 pointer-events-none"
+          className="absolute right-0 top-0 bottom-0 w-16 md:w-32 z-20 pointer-events-none"
           style={{
             background: 'linear-gradient(to left, #0D1635, transparent)',
           }}
@@ -56,10 +58,10 @@ export default function CertificationsSection() {
 
         {/* Track animado */}
         <div
-          className="flex items-center gap-12 md:gap-16"
+          className="flex items-center gap-6 md:gap-10"
           style={{
             width: 'max-content',
-            animation: 'marqueeScroll 28s linear infinite',
+            animation: 'marqueeScroll 35s linear infinite',
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLDivElement).style.animationPlayState = 'paused'
@@ -71,31 +73,19 @@ export default function CertificationsSection() {
           {track.map((seal, i) => (
             <div
               key={`${seal.alt}-${i}`}
-              className="shrink-0 flex items-center justify-center px-2"
-              style={{ opacity: 0.85 }}
+              className="shrink-0 flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl hover:-translate-y-1 transition-transform duration-300"
+              style={{ 
+                height: '80px',
+                minWidth: '100px',
+              }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={seal.src}
                 alt={seal.alt}
                 width={seal.width}
-                className="h-auto object-contain transition-all duration-300"
-                style={{
-                  maxHeight: '56px',
-                  filter: 'brightness(0) invert(1)',
-                  opacity: 0.75,
-                }}
+                className="h-full object-contain"
                 loading="lazy"
-                onMouseEnter={(e) => {
-                  const img = e.currentTarget
-                  img.style.filter = 'brightness(0) invert(1)'
-                  img.style.opacity = '1'
-                }}
-                onMouseLeave={(e) => {
-                  const img = e.currentTarget
-                  img.style.filter = 'brightness(0) invert(1)'
-                  img.style.opacity = '0.75'
-                }}
               />
             </div>
           ))}

@@ -5,46 +5,12 @@ import { ArrowRight, MessageCircle, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import WhatsAppLeadModal from '@/components/ui/WhatsAppLeadModal'
 
-// Countdown to end of month for urgency
-function useCountdown() {
-  const getEnd = () => {
-    const now = new Date()
-    return new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0).getTime()
-  }
-  const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 })
-  useEffect(() => {
-    const tick = () => {
-      const diff = getEnd() - Date.now()
-      const d = Math.floor(diff / 86400000)
-      const h = Math.floor((diff % 86400000) / 3600000)
-      const m = Math.floor((diff % 3600000) / 60000)
-      const s = Math.floor((diff % 60000) / 1000)
-      setTime({ d, h, m, s })
-    }
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [])
-  return time
-}
+// Already removed useCountdown hook
 
-function Digit({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="flex flex-col items-center">
-      <div
-        className="w-14 h-16 rounded-xl flex items-center justify-center text-2xl font-extrabold text-white shadow-lg"
-        style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}
-      >
-        {String(value).padStart(2, '0')}
-      </div>
-      <span className="text-white/40 text-xs mt-1.5 uppercase tracking-wide">{label}</span>
-    </div>
-  )
-}
+// Already removed Digit component
 
 export default function FinalCTASection() {
   const [waModalOpen, setWaModalOpen] = useState(false)
-  const { d, h, m, s } = useCountdown()
 
   return (
     <section
@@ -80,17 +46,14 @@ export default function FinalCTASection() {
             Cada vez más empresas ya facturan legal y sin complicaciones. La habilitación es gratis y en 48 horas.
           </p>
 
-          {/* Countdown */}
-          <div className="mb-8">
-            <p className="text-white/50 text-sm mb-3 uppercase tracking-widest">Oferta termina en</p>
-            <div className="flex items-center justify-center gap-3">
-              <Digit value={d} label="Días" />
-              <span className="text-white/40 text-2xl font-light pb-4">:</span>
-              <Digit value={h} label="Horas" />
-              <span className="text-white/40 text-2xl font-light pb-4">:</span>
-              <Digit value={m} label="Min" />
-              <span className="text-white/40 text-2xl font-light pb-4">:</span>
-              <Digit value={s} label="Seg" />
+          {/* Active companies indicator */}
+          <div className="mb-10 flex flex-col items-center justify-center">
+            <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">
+              Más empresas activas
+            </div>
+            <div className="text-[var(--cyan)] font-semibold text-base uppercase tracking-[0.2em] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[var(--cyan)] animate-pulse"></span>
+              Creciendo...
             </div>
           </div>
 
@@ -119,7 +82,7 @@ export default function FinalCTASection() {
             {[
               'Sin cláusula de permanencia',
               'Soporte técnico gratis',
-              'Migración sin costo',
+              'Certificado de firma digital incluida',
               'ISO27001 certificado',
             ].map((item) => (
               <div key={item} className="flex items-center gap-2 text-sm text-white/55">
