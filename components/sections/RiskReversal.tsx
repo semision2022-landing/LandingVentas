@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ShieldCheck, Clock, RefreshCw, GraduationCap, Headphones, Award } from 'lucide-react'
+import { ShieldCheck, Clock, RefreshCw, GraduationCap, Headphones, Award, BadgeCheck } from 'lucide-react'
 
 const guarantees = [
   {
@@ -45,6 +45,13 @@ const guarantees = [
     description: 'Tu información protegida con los más altos estándares de seguridad internacionales y Oracle Cloud.',
     color: '#EF4444',
     bg: 'rgba(239, 68, 68, 0.08)',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Certificado de firma digital incluida',
+    description: 'e-Misión gestiona el certificado de firma digital por ti. No necesitas comprarlo por separado — está incluido en todos los planes.',
+    color: '#0EA5E9',
+    bg: 'rgba(14, 165, 233, 0.08)',
   },
 ]
 
