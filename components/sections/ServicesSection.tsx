@@ -35,8 +35,8 @@ const services = [
   {
     icon: FileSignature,
     title: 'Endoso',
-    description: 'Transmisión y gestión de endosos electrónicos de facturas ante la DIAN con validez legal.',
-    price: 'Documento electrónico DIAN',
+    description: 'Transmisión y gestión de endosos electrónicos de facturas ante la RADIAN con validez legal.',
+    price: 'Documento electrónico RADIAN',
     color: '#8B5CF6',
   },
   {
