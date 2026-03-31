@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Users, ShoppingCart, ShieldCheck, ArrowRight } from 'lucide-react'
+import { FileText, Users, ShoppingCart, ShieldCheck, ArrowRight, FileSignature, CalendarClock } from 'lucide-react'
 
 const services = [
   {
@@ -32,11 +32,25 @@ const services = [
     price: 'Seguridad y salud laboral',
     color: '#F59E0B',
   },
+  {
+    icon: FileSignature,
+    title: 'Endoso',
+    description: 'Transmisión y gestión de endosos electrónicos de facturas ante la DIAN con validez legal.',
+    price: 'Documento electrónico DIAN',
+    color: '#8B5CF6',
+  },
+  {
+    icon: CalendarClock,
+    title: 'Eventos Mercantiles',
+    description: 'Registro y transmisión de eventos mercantiles electrónicos: recibo, aceptación, reclamación y más.',
+    price: 'Gestión de eventos DIAN',
+    color: '#EC4899',
+  },
 ]
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.1 } },
 }
 
 const cardVariants = {
@@ -75,13 +89,13 @@ export default function ServicesSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            Soluciones de documentos electrónicos integradas y avaladas por la DIAN para empresas de todos los tamaños.
+            Soluciones de documentos electrónicos integradas y autorizadas por la DIAN para empresas de todos los tamaños.
           </motion.p>
         </div>
 
-        {/* Cards */}
+        {/* Cards — 2 cols mobile, 3 cols tablet, 3 cols desktop */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-2 md:grid-cols-3 gap-5 lg:gap-6"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -96,18 +110,18 @@ export default function ServicesSection() {
                 className="card group cursor-pointer"
               >
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${service.color}15`, color: service.color }}
+                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: `${service.color}18`, color: service.color }}
                 >
-                  <Icon size={24} />
+                  <Icon size={22} />
                 </div>
-                <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--navy)' }}>
+                <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--navy)' }}>
                   {service.title}
                 </h3>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--gray)' }}>
+                <p className="text-sm leading-relaxed mb-4 hidden sm:block" style={{ color: 'var(--gray)' }}>
                   {service.description}
                 </p>
-                <p className="text-xs font-semibold mb-4" style={{ color: service.color }}>
+                <p className="text-xs font-semibold mb-3" style={{ color: service.color }}>
                   {service.price}
                 </p>
                 <a

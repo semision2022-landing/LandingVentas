@@ -28,6 +28,11 @@ const seals = [
     alt: 'e-Misión — Certified Service Providers',
     width: 170,
   },
+  {
+    src: '/logo RADIAN.png',
+    alt: 'RADIAN — Factura Electrónica como Título Valor',
+    width: 120,
+  },
 ]
 
 export default function CertificationsSection() {

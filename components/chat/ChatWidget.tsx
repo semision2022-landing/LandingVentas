@@ -14,7 +14,7 @@ interface Message {
   id: string
 }
 
-const GREETING = '¡Hola! 👋 Soy Laura, asesora de e-Misión. ¿En qué te puedo ayudar hoy? Cuéntame sobre tu empresa y con gusto te asesoro.'
+const GREETING = '¡Hola! 👋 Soy Lía, asesora de e-Misión. ¿En qué te puedo ayudar hoy? Cuéntame sobre tu empresa y con gusto te asesoro.'
 
 function generateId() {
   return Math.random().toString(36).slice(2, 9)
@@ -299,13 +299,13 @@ export default function ChatWidget() {
               <div className="relative shrink-0">
                 <img
                   src="/laura-avatar.png"
-                  alt="Laura"
+                  alt="Lía"
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20"
                 />
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 ring-2 ring-[#18224C]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white leading-tight">Laura · Asesora e-Misión</p>
+                <p className="text-sm font-semibold text-white leading-tight">Lía · Asesora e-Misión</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-green-400 block" />
                   <span className="text-xs text-white/70">En línea</span>
@@ -573,7 +573,7 @@ export default function ChatWidget() {
             onClick={() => setIsOpen(!isOpen)}
             className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl transition-all duration-300 hover:scale-110 active:scale-95"
             style={{ backgroundColor: 'var(--navy)' }}
-            aria-label={isOpen ? 'Cerrar chat' : 'Abrir chat con Laura'}
+            aria-label={isOpen ? 'Cerrar chat' : 'Abrir chat con Lía'}
           >
             {/* Outer slow pulse ring */}
             {!isOpen && (

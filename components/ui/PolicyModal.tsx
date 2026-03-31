@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, Suspense, lazy } from 'react'
-import { X, FileText, Download } from 'lucide-react'
+import { X, FileText } from 'lucide-react'
 
 // Carga el viewer solo en client (pdfjs usa APIs de browser)
 const PDFViewer = lazy(() => import('./PDFViewer'))
@@ -62,14 +62,6 @@ export default function PolicyModal({ isOpen, title, pdfPath, onClose }: PolicyM
           </div>
 
           <div className="flex items-center gap-2 shrink-0 ml-3">
-            <a
-              href={pdfPath}
-              download
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition hover:opacity-80"
-              style={{ backgroundColor: '#18224C', color: 'white' }}
-            >
-              <Download size={12} /> Descargar
-            </a>
             <button
               onClick={onClose}
               className="w-8 h-8 rounded-lg flex items-center justify-center transition hover:scale-110"

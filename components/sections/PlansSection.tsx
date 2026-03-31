@@ -212,14 +212,14 @@ export default function PlansSection({ wcProducts = [] }: PlansSectionProps) {
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
                 style={{ backgroundColor: 'rgba(0,208,255,0.15)', color: 'var(--cyan)' }}
               >
-                +80 planes disponibles
+                Más planes disponibles
               </span>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
                 ¿Necesitas un plan a la medida?{' '}
                 <span style={{ color: 'var(--cyan)' }}>Te asesoramos gratis.</span>
               </h3>
               <p className="text-white/70 text-sm md:text-base max-w-xl">
-                Manejamos más de 80 planes adaptados a cada empresa. Un asesor te ayuda a
+                Manejamos planes personalizados adaptados a cada empresa. Un asesor te ayuda a
                 elegir el perfecto para tu operación — sin costo adicional.
               </p>
             </div>
