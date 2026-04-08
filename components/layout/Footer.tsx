@@ -154,9 +154,22 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-white/50">
-            © 2026 e-Misión — Nodexum S.A.S. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p className="text-sm text-white/50">
+              © 2026 e-Misión — Nodexum S.A.S. Todos los derechos reservados.
+            </p>
+            <p className="text-xs mt-1 text-white/40 flex items-center gap-1">
+              Desarrollado con <span className="text-red-500 text-sm animate-pulse">♥️</span> por{' '}
+              <a 
+                href="https://wa.me/573138537261?text=Hola%20Renting%20Amc%20Agency!%20Me%20encant%C3%B3%20el%20dise%C3%B1o%20de%20la%20p%C3%A1gina%20web.%20Me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20su%20agencia." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white/60 hover:text-white transition-all duration-300 font-medium hover:underline decoration-white/30"
+              >
+                Renting Amc Agency
+              </a>
+            </p>
+          </div>
           <div
             className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
             style={{ backgroundColor: 'rgba(0, 208, 255, 0.1)', color: 'var(--cyan)' }}
