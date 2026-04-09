@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
-import { sendOrderConfirmationEmail } from '@/lib/resend'
 import { createPayZenOrder } from '@/lib/payzen'
 
 export async function POST(req: NextRequest) {
@@ -59,16 +58,31 @@ export async function POST(req: NextRequest) {
         .eq('id', order.id)
     }
 
-    // Send confirmation emails
-    try {
-      await sendOrderConfirmationEmail({
-        customerEmail,
-        customerName,
-        planName,
-        planPrice,
-        orderId: order.id,
+    // Save prospect in conversations table as hot lead (source: checkout)
+    // so it shows up in the admin leads panel and gets assigned to a sales agent
+    const leadId = crypto.randomUUID()
+    await createAdminClient()
+      .from('conversations')
+      .insert({
+        id: leadId,
+        session_id: `checkout_${order.id}`,
+        status: 'closed',
+        visitor_name: customerName,
+        visitor_email: customerEmail,
+        visitor_phone: customerPhone,
+        plan_interest: planName,
+        lead_source: 'checkout',
+        lead_source_type: 'checkout',
       })
-    } catch { /* email failure should not block order */ }
+      .then(({ error }) => { if (error) console.error('[create-order] lead insert:', error) })
+
+    // Assign lead to next agent in round-robin (fire-and-forget)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://ventas.emision.co'
+    fetch(`${baseUrl}/api/leads/assign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversationId: leadId, source: 'checkout' }),
+    }).catch(() => {})
 
     return NextResponse.json({
       success: true,

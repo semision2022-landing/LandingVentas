@@ -98,7 +98,7 @@ interface LeadAssignmentParams {
 
 export async function sendLeadAssignmentEmail(params: LeadAssignmentParams) {
   const { agentName, agentEmail, leadName, leadEmail, leadPhone, planInterest, source, adminUrl } = params
-  const sourceLabel = source === 'chatbot' ? '🤖 Chatbot Laura' : '💬 Formulario WhatsApp'
+  const sourceLabel = source === 'chatbot' ? '🤖 Chatbot Lía' : source === 'checkout' ? '🛒 Formulario de compra (lead caliente)' : '💬 Formulario WhatsApp'
 
   const html = `
     <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#18224C;">

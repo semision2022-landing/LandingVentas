@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase'
 import { createWooCommerceOrder } from '@/lib/woocommerce'
+import { sendOrderConfirmationEmail } from '@/lib/resend'
 
 // Called by the frontend after Krypton confirms payment success
 export async function POST(req: NextRequest) {
@@ -42,6 +43,17 @@ export async function POST(req: NextRequest) {
       customer_nit: order.customer_nit ?? null,
       status: 'completed',
     }, { onConflict: 'order_id' })
+
+    // Send confirmation emails now that payment is real
+    try {
+      await sendOrderConfirmationEmail({
+        customerEmail: order.customer_email,
+        customerName:  order.customer_name,
+        planName:      order.plan_name,
+        planPrice:     order.plan_price,
+        orderId:       orderId,
+      })
+    } catch { /* email failure should not block completion */ }
 
     // Create order in WooCommerce if product ID exists
     if (order.wc_product_id) {
