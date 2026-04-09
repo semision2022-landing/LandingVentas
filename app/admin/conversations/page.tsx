@@ -146,6 +146,9 @@ export default function ConversationsPage() {
     let q = supabase
       .from('conversations')
       .select('*, agents!assigned_to(name)')
+      // Chat Center solo muestra chats del bot Lía — excluye WhatsApp, checkout y manuales
+      .or('lead_source.eq.chatbot,lead_source.is.null,lead_source.eq.')
+      .not('lead_source', 'in', '("whatsapp","checkout","manual")')
       .order('created_at', { ascending: false })
     if (filter !== 'all') q = q.eq('status', filter)
     const { data } = await q
@@ -245,7 +248,7 @@ export default function ConversationsPage() {
       `Plan: ${activeConv.plan_interest ?? '—'}`,
       `Fecha: ${new Date(activeConv.created_at).toLocaleString('es-CO')}`,
       '─'.repeat(50),
-      ...messages.map((m) => `[${formatTime(m.created_at)}] ${m.role === 'user' ? 'Cliente' : m.role === 'agent' ? 'Agente' : 'Laura'}: ${m.content}`),
+      ...messages.map((m) => `[${formatTime(m.created_at)}] ${m.role === 'user' ? 'Cliente' : m.role === 'agent' ? 'Agente' : 'Lía'}: ${m.content}`),
     ].join('\n')
     const blob = new Blob([lines], { type: 'text/plain; charset=utf-8' })
     const url = URL.createObjectURL(blob)
@@ -405,7 +408,7 @@ export default function ConversationsPage() {
             {activeConv.status === 'bot' && (
               <div className="mx-4 mt-3 px-4 py-2.5 rounded-xl text-xs font-medium text-center"
                 style={{ backgroundColor: '#EEF2FF', color: '#18224C', border: '1px solid #C7D2FE' }}>
-                🤖 El bot Laura está atendiendo esta conversación
+                🤖 La IA Lía está atendiendo esta conversación
               </div>
             )}
             {activeConv.status === 'waiting_agent' && (
@@ -437,7 +440,7 @@ export default function ConversationsPage() {
                       <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
                         <div className={`max-w-[75%]`}>
                           <p className="text-[10px] mb-1 font-medium" style={{ color: '#94A3B8', textAlign: isUser ? 'right' : 'left' }}>
-                            {msg.role === 'user' ? '👤 Cliente' : msg.role === 'agent' ? `🧑 ${activeConv.assigned_agent ?? 'Agente'}` : '🤖 Laura'}
+                            {msg.role === 'user' ? '👤 Cliente' : msg.role === 'agent' ? `🧑 ${activeConv.assigned_agent ?? 'Agente'}` : '🤖 Lía'}
                           </p>
                           <div
                             className="px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed"

@@ -13,7 +13,8 @@ export interface Conversation {
   assigned_agent: string | null   // nombre visible (legado)
   assigned_to: string | null      // UUID del agente asignado (nuevo)
   attended: boolean               // si el comercial ya lo atendió
-  lead_source: string | null      // 'chatbot' | 'whatsapp'
+  lead_source: string | null      // 'chatbot' | 'whatsapp' | 'checkout' | 'manual'
+  crm_status: string | null       // 'pendiente' | 'interesado' | 'seguimiento' | 'venta' | 'cerrado_perdido'
   unread_count: number
   closed_at: string | null
   created_at: string
@@ -22,8 +23,10 @@ export interface Conversation {
   last_message_at?: string
   agent_name?: string             // nombre del agente (join en queries)
   // Nuevos campos para manual entry
-  lead_source_type?: 'landing' | 'manual'
+  lead_source_type?: 'landing' | 'manual' | 'checkout'
   added_by?: string | null        // agente que lo creó manualmente
+  // joined labels (para CSV y tabla)
+  labels?: string[]
 }
 
 export interface LeadLabel {

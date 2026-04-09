@@ -13,11 +13,12 @@ function formatDate(ts: string) {
   return new Date(ts).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
-const STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  bot:           { label: '🤖 Bot', color: '#18224C', bg: '#EEF2FF' },
-  waiting_agent: { label: '⏳ Esperando', color: '#EA580C', bg: '#FFF7ED' },
-  with_agent:    { label: '🟢 Con agente', color: '#579601', bg: '#F0FDF4' },
-  closed:        { label: '⚫ Cerrada', color: '#64748B', bg: '#F8FAFC' },
+const CRM_CFG: Record<string, { label: string; color: string; bg: string }> = {
+  pendiente:      { label: '⏳ Pendiente',      color: '#B45309', bg: '#FEF9C3' },
+  interesado:     { label: '💚 Interesado',     color: '#166534', bg: '#DCFCE7' },
+  seguimiento:    { label: '🔵 Seguimiento',    color: '#1E40AF', bg: '#DBEAFE' },
+  venta:          { label: '🟠 Venta',          color: '#9A3412', bg: '#FFEDD5' },
+  cerrado_perdido:{ label: '🔴 Cerrado/Perdido', color: '#991B1B', bg: '#FEE2E2' },
 }
 
 const PAGE_SIZE = 20
@@ -87,14 +88,32 @@ export default function LeadsPage() {
     else { setSortKey(key); setSortDir('asc') }
   }
 
-  const exportCSV = () => {
-    const header = ['Nombre', 'Email', 'Teléfono', 'Plan', 'Asesor', 'Atendido', 'Fuente', 'Fecha'].join(',')
-    const rows = filtered.map((l) =>
-      [l.visitor_name ?? '', l.visitor_email ?? '', l.visitor_phone ?? '',
-       l.plan_interest ?? '', (l as Conversation).agent_name ?? l.assigned_agent ?? '',
-       l.attended ? 'Sí' : 'No', l.lead_source ?? '',
-       formatDate(l.created_at)].map((v) => `"${v}"`).join(',')
-    )
+  const exportCSV = async () => {
+    // Load labels for all visible leads
+    const supabase = createAuthClient()
+    const ids = filtered.map(l => l.id)
+    const { data: labelsData } = await supabase
+      .from('lead_labels')
+      .select('lead_id, label')
+      .in('lead_id', ids)
+    const labelsMap: Record<string, string[]> = {}
+    ;(labelsData ?? []).forEach((r: { lead_id: string; label: string }) => {
+      if (!labelsMap[r.lead_id]) labelsMap[r.lead_id] = []
+      labelsMap[r.lead_id].push(r.label)
+    })
+
+    const header = ['Nombre', 'Email', 'Teléfono', 'Plan', 'Asesor', 'Estado CRM', 'Etiquetas', 'Chat Status', 'Fuente', 'Fecha'].join(',')
+    const rows = filtered.map((l) => {
+      const crmLabel = CRM_CFG[l.crm_status ?? 'pendiente']?.label ?? l.crm_status ?? ''
+      const labelsList = (labelsMap[l.id] ?? []).join('; ')
+      const source = l.lead_source_type === 'manual' ? 'Manual' : l.lead_source === 'chatbot' ? 'Chat' : l.lead_source === 'whatsapp' ? 'WhatsApp' : l.lead_source === 'checkout' ? 'Checkout' : 'Landing'
+      return [
+        l.visitor_name ?? '', l.visitor_email ?? '', l.visitor_phone ?? '',
+        l.plan_interest ?? '', (l as Conversation).agent_name ?? l.assigned_agent ?? '',
+        crmLabel, labelsList, l.status ?? '', source,
+        formatDate(l.created_at)
+      ].map(v => `"${String(v).replace(/"/g, "'")}"`) .join(',')
+    })
     const csv = [header, ...rows].join('\n')
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv; charset=utf-8' })
     const url = URL.createObjectURL(blob)
@@ -233,22 +252,20 @@ export default function LeadsPage() {
                         <span style={{ color: '#94A3B8' }}>Sin asignar</span>
                       )}
                     </td>
-                    {/* Estado / Atendido */}
+                    {/* Estado CRM + Chat Status */}
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
-                        <span className="text-[11px] px-2 py-0.5 rounded-full font-medium"
-                          style={{ backgroundColor: cfg.bg, color: cfg.color }}>
-                          {cfg.label}
-                        </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                          style={{ backgroundColor: lead.attended ? '#F0FDF4' : '#FFF7ED', color: lead.attended ? '#579601' : '#EA580C' }}>
-                          {lead.attended ? '✅ Atendido' : '⏳ Pendiente'}
-                        </span>
+                        {(() => {
+                          const crm = CRM_CFG[lead.crm_status ?? 'pendiente'] ?? CRM_CFG.pendiente
+                          return <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: crm.bg, color: crm.color }}>{crm.label}</span>
+                        })()}
                       </div>
                     </td>
-                    {/* Fuente */}
+                    {/* Fuente + Etiquetas */}
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
-                      {lead.lead_source_type === 'manual' ? '✍️ Manual' : lead.lead_source === 'chatbot' ? '🤖 Chat' : lead.lead_source === 'whatsapp' ? '💬 WhatsApp' : '🌐 Landing'}
+                      <div className="flex flex-col gap-1">
+                        <span>{lead.lead_source_type === 'manual' ? '✍️ Manual' : lead.lead_source === 'chatbot' ? '🤖 Chat' : lead.lead_source === 'whatsapp' ? '💬 WhatsApp' : lead.lead_source === 'checkout' ? '🛒 Checkout' : '🌐 Landing'}</span>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-xs" style={{ color: '#64748B' }}>
                       {formatDate(lead.created_at)}
@@ -312,6 +329,9 @@ export default function LeadsPage() {
       <LeadDrawer
         lead={selectedLead}
         onClose={() => setSelectedLead(null)}
+        onStatusChange={(lId, newStatus) => {
+          setLeads(prev => prev.map(l => l.id === lId ? { ...l, crm_status: newStatus } : l))
+        }}
       />
     </div>
   )

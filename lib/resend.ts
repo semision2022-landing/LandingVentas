@@ -141,3 +141,70 @@ export async function sendLeadAssignmentEmail(params: LeadAssignmentParams) {
   }
 }
 
+// ─── Task notification ────────────────────────────────────────────────────────
+interface TaskNotificationParams {
+  agentName: string
+  agentEmail: string
+  leadName: string
+  leadEmail: string | null
+  leadPhone: string | null
+  taskTitle: string
+  taskDueDate: string | null
+  adminUrl: string
+}
+
+export async function sendTaskNotificationEmail(params: TaskNotificationParams) {
+  const { agentName, agentEmail, leadName, leadEmail, leadPhone, taskTitle, taskDueDate, adminUrl } = params
+
+  const dueLabel = taskDueDate
+    ? new Date(taskDueDate).toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })
+    : 'Sin fecha límite'
+
+  const internalHtml = `
+    <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#18224C;">
+      <div style="background:#18224C;padding:28px 32px;border-radius:12px 12px 0 0;">
+        <h1 style="color:#00D0FF;font-size:22px;margin:0;">✈ e-Misión — Gestión de Tareas</h1>
+      </div>
+      <div style="background:#f8fafc;padding:28px 32px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;">
+        <h2 style="font-size:18px;margin-bottom:16px;">📋 Nueva tarea creada</h2>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:20px;margin-bottom:24px;">
+          <table style="width:100%;font-size:13px;color:#64748b;border-collapse:collapse;">
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;width:130px;">Tarea</td><td>${taskTitle}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Lead</td><td>${leadName}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Asesor</td><td>${agentName}</td></tr>
+            <tr><td style="padding:6px 0;font-weight:600;color:#18224C;">Fecha límite</td><td>${dueLabel}</td></tr>
+            ${leadPhone ? `<tr><td style="padding:6px 0;font-weight:600;color:#18224C;">WhatsApp</td><td><a href="https://wa.me/57${leadPhone.replace(/\D/g, '')}" style="color:#25D366;">${leadPhone}</a></td></tr>` : ''}
+          </table>
+        </div>
+        <a href="${adminUrl}" style="display:block;background:#18224C;color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;margin-bottom:20px;">👁 Ver lead en el panel →</a>
+        <p style="font-size:12px;color:#94a3b8;text-align:center;">© 2026 e-Misión — Nodexum S.A.S.</p>
+      </div>
+    </div>
+  `
+
+  const clientHtml = `
+    <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#18224C;">
+      <div style="background:#18224C;padding:28px 32px;border-radius:12px 12px 0 0;">
+        <h1 style="color:#00D0FF;font-size:22px;margin:0;">✈ e-Misión</h1>
+      </div>
+      <div style="background:#f8fafc;padding:28px 32px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;">
+        <h2 style="font-size:18px;margin-bottom:12px;">Hola, ${leadName} 👋</h2>
+        <p style="color:#64748b;font-size:13px;margin-bottom:20px;">Tu asesor <strong>${agentName}</strong> ha programado un seguimiento para atenderte:</p>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:20px;">
+          <p style="font-size:15px;font-weight:600;color:#18224C;margin:0 0 8px;">📋 ${taskTitle}</p>
+          <p style="font-size:13px;color:#64748b;margin:0;">📅 ${dueLabel}</p>
+        </div>
+        <p style="font-size:12px;color:#94a3b8;margin-top:24px;text-align:center;">© 2026 e-Misión — Nodexum S.A.S.</p>
+      </div>
+    </div>
+  `
+
+  const sends: Promise<unknown>[] = [
+    resend.emails.send({ from: 'e-Misión Leads <noreply@ventas.emision.co>', to: agentEmail, subject: `📋 Tarea: ${taskTitle} — ${leadName}`, html: internalHtml }),
+    resend.emails.send({ from: 'e-Misión Sistema <noreply@ventas.emision.co>', to: NOTIFICATION_EMAILS, subject: `📋 Tarea: ${taskTitle} — ${leadName} (${agentName})`, html: internalHtml }),
+  ]
+  if (leadEmail) {
+    sends.push(resend.emails.send({ from: 'e-Misión <noreply@ventas.emision.co>', to: leadEmail, subject: `Tu asesor ${agentName} programó un seguimiento`, html: clientHtml }))
+  }
+  await Promise.allSettled(sends)
+}
