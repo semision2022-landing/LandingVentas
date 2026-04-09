@@ -226,7 +226,6 @@ export default function LeadsPage() {
                 </td></tr>
               )}
               {!loading && paginated.map((lead) => {
-                const cfg = STATUS_CFG[lead.status] ?? STATUS_CFG.bot
                 return (
                   <tr key={lead.id} className="border-b transition-colors hover:bg-gray-50" style={{ borderColor: '#F1F5F9' }}>
                     <td className="px-4 py-3 font-medium" style={{ color: '#18224C' }}>

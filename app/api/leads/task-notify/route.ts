@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Lead no encontrado' }, { status: 404 })
     }
 
-    const agentData = lead.agents as { name: string; email: string } | null
+    const agentData = (lead.agents as unknown) as { name: string; email: string } | null
     const agentName  = agentData?.name  ?? 'Asesor'
     const agentEmail = agentData?.email ?? null
 
