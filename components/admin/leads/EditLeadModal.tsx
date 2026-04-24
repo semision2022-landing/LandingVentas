@@ -67,7 +67,6 @@ export default function EditLeadModal({ lead, isOpen, onClose, onSuccess }: Prop
     supabase
       .from('agents')
       .select('id, name, email, role')
-      .eq('active', true)
       .order('name')
       .then(({ data }) => {
         setAgents((data ?? []) as Agent[])
