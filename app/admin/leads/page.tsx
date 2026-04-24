@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { createAuthClient } from '@/lib/supabase-auth'
-import { Search, Download, ExternalLink, MessageSquare, Filter, Plus, Eye } from 'lucide-react'
+import { Search, Download, ExternalLink, MessageSquare, Filter, Plus, Eye, Pencil } from 'lucide-react'
 import type { Conversation } from '@/types/admin'
 import AddLeadModal from '@/components/admin/leads/AddLeadModal'
 import LeadDrawer from '@/components/admin/leads/LeadDrawer'
+import EditLeadModal from '@/components/admin/leads/EditLeadModal'
 
 type Period = 'all' | 'today' | 'week' | 'month'
 
@@ -34,6 +35,7 @@ export default function LeadsPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [addModalOpen, setAddModalOpen] = useState(false)
   const [selectedLead, setSelectedLead] = useState<Conversation | null>(null)
+  const [editLead, setEditLead] = useState<Conversation | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   useEffect(() => {
@@ -276,6 +278,11 @@ export default function LeadsPage() {
                           style={{ color: '#18224C' }}>
                           <Eye size={13} />
                         </button>
+                        <button onClick={() => setEditLead(lead)} title="Editar lead"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-indigo-50"
+                          style={{ color: '#5F4EDA' }}>
+                          <Pencil size={13} />
+                        </button>
                         <a href={`/admin/conversations?id=${lead.id}`} title="Ver chat"
                           className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
                           style={{ color: '#18224C' }}>
@@ -291,6 +298,7 @@ export default function LeadsPage() {
                         )}
                       </div>
                     </td>
+
                   </tr>
                 )
               })}
@@ -324,6 +332,15 @@ export default function LeadsPage() {
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         onSuccess={() => { setAddModalOpen(false); setRefreshTrigger(t => t + 1) }}
+      />
+      <EditLeadModal
+        lead={editLead}
+        isOpen={!!editLead}
+        onClose={() => setEditLead(null)}
+        onSuccess={(updated) => {
+          setLeads(prev => prev.map(l => l.id === editLead?.id ? { ...l, ...updated } : l))
+          setEditLead(null)
+        }}
       />
       <LeadDrawer
         lead={selectedLead}
