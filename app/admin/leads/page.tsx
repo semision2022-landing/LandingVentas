@@ -130,23 +130,28 @@ export default function LeadsPage() {
   return (
     <div className="p-6">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-5">
+      <div className="flex flex-wrap items-center gap-2 mb-5">
         <div
-          className="flex items-center gap-2 flex-1 min-w-[200px] rounded-xl border px-3 bg-white transition-all duration-200"
-          style={{ borderColor: '#E2E8F0' }}
-          onFocusCapture={e => (e.currentTarget.style.borderColor = '#18224C', e.currentTarget.style.boxShadow = '0 0 0 3px rgba(24,34,76,0.08)')}
-          onBlurCapture={e => (e.currentTarget.style.borderColor = search ? '#18224C' : '#E2E8F0', e.currentTarget.style.boxShadow = 'none')}
+          className="flex items-center gap-2 rounded-lg border bg-white px-3 transition-all duration-200"
+          style={{ borderColor: '#E2E8F0', width: 260, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+          onFocusCapture={e => { e.currentTarget.style.borderColor = '#18224C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(24,34,76,0.10)' }}
+          onBlurCapture={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)' }}
         >
           <Search size={14} style={{ color: '#94A3B8', flexShrink: 0 }} />
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(0) }}
-            placeholder="Buscar por nombre, email o teléfono..."
-            className="flex-1 py-2.5 text-sm outline-none bg-transparent"
+            placeholder="Buscar lead..."
+            className="flex-1 py-2 text-sm outline-none bg-transparent"
             style={{ color: '#18224C' }}
           />
+          {search && (
+            <button onClick={() => { setSearch(''); setPage(0) }} className="text-gray-300 hover:text-gray-500 transition-colors">
+              <span style={{ fontSize: 16, lineHeight: 1 }}>×</span>
+            </button>
+          )}
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
           <button onClick={() => setAddModalOpen(true)}
             className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-all hover:-translate-y-0.5"
             style={{ backgroundColor: '#579601', color: 'white' }}>
