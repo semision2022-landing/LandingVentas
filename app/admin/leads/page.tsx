@@ -131,21 +131,19 @@ export default function LeadsPage() {
     <div className="p-6">
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10 transition-colors duration-200" style={{ color: search ? '#18224C' : '#94A3B8' }} />
+        <div
+          className="flex items-center gap-2 flex-1 min-w-[200px] rounded-xl border px-3 bg-white transition-all duration-200"
+          style={{ borderColor: '#E2E8F0' }}
+          onFocusCapture={e => (e.currentTarget.style.borderColor = '#18224C', e.currentTarget.style.boxShadow = '0 0 0 3px rgba(24,34,76,0.08)')}
+          onBlurCapture={e => (e.currentTarget.style.borderColor = search ? '#18224C' : '#E2E8F0', e.currentTarget.style.boxShadow = 'none')}
+        >
+          <Search size={14} style={{ color: '#94A3B8', flexShrink: 0 }} />
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(0) }}
             placeholder="Buscar por nombre, email o teléfono..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm border outline-none transition-all duration-200 focus:ring-2 focus:ring-offset-0"
-            style={{
-              borderColor: search ? '#18224C' : '#E2E8F0',
-              color: '#18224C',
-              backgroundColor: '#fff',
-              boxShadow: 'none',
-            }}
-            onFocus={e => { e.currentTarget.style.borderColor = '#18224C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(24,34,76,0.08)' }}
-            onBlur={e => { e.currentTarget.style.borderColor = search ? '#18224C' : '#E2E8F0'; e.currentTarget.style.boxShadow = 'none' }}
+            className="flex-1 py-2.5 text-sm outline-none bg-transparent"
+            style={{ color: '#18224C' }}
           />
         </div>
         <div className="flex gap-2 flex-wrap">
