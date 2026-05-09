@@ -198,6 +198,25 @@ gtag('config', 'AW-10987711260');
             `,
           }}
         />
+        {/* Google Ads — Conversión: Clic WhatsApp Landing */}
+        <Script
+          id="google-ads-whatsapp-conversion"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') { window.location = url; }
+  };
+  gtag('event', 'conversion', {
+    'send_to': 'AW-10987711260/P2VDCJ-N4KkcEJzWrPco',
+    'event_callback': callback
+  });
+  return false;
+}
+            `,
+          }}
+        />
 
         {/* Facebook Pixel base code */}
         {FB_PIXEL_ID && (

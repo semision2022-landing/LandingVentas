@@ -79,8 +79,12 @@ export default function WhatsAppLeadModal({ isOpen, onClose }: Props) {
         `Hola, soy ${form.name.trim()}.${form.plan && form.plan !== 'No sé aún' ? ` Me interesa el ${form.plan}.` : ''} Quisiera más información sobre e-Misión.`
       )
 
-      // Redirect to WhatsApp
-      window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank')
+      // Registrar conversión Google Ads y abrir WhatsApp
+      const waUrl = `https://wa.me/${WA_NUMBER}?text=${msg}`
+      if (typeof window !== 'undefined' && typeof (window as Window & { gtag_report_conversion?: (url: string) => boolean }).gtag_report_conversion === 'function') {
+        ;(window as Window & { gtag_report_conversion: (url: string) => boolean }).gtag_report_conversion(waUrl)
+      }
+      window.open(waUrl, '_blank')
       onClose()
       setForm({ name: '', email: '', phone: '', plan: '' })
     } catch {

@@ -31,6 +31,10 @@ export default function AnnouncementBar() {
           href="https://wa.me/573044796885?text=Hola%2C%20quiero%20información%20sobre%20facturación%20electrónica%20e-Misión"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => {
+            const fn = (window as Window & { gtag_report_conversion?: (url: string) => boolean }).gtag_report_conversion
+            if (typeof fn === 'function') { e.preventDefault(); fn((e.currentTarget as HTMLAnchorElement).href) }
+          }}
           className="inline-flex items-center gap-1 ml-2 px-3 py-0.5 rounded-full text-xs font-bold transition-all hover:scale-105"
           style={{ backgroundColor: 'var(--cyan)', color: 'var(--navy)' }}
         >
