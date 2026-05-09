@@ -32,7 +32,8 @@ export default function AnnouncementBar() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => {
-            const fn = (window as Window & { gtag_report_conversion?: (url: string) => boolean }).gtag_report_conversion
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fn = (window as any).gtag_report_conversion
             if (typeof fn === 'function') { e.preventDefault(); fn((e.currentTarget as HTMLAnchorElement).href) }
           }}
           className="inline-flex items-center gap-1 ml-2 px-3 py-0.5 rounded-full text-xs font-bold transition-all hover:scale-105"

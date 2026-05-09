@@ -81,9 +81,9 @@ export default function WhatsAppLeadModal({ isOpen, onClose }: Props) {
 
       // Registrar conversión Google Ads y abrir WhatsApp
       const waUrl = `https://wa.me/${WA_NUMBER}?text=${msg}`
-      if (typeof window !== 'undefined' && typeof (window as Window & { gtag_report_conversion?: (url: string) => boolean }).gtag_report_conversion === 'function') {
-        ;(window as Window & { gtag_report_conversion: (url: string) => boolean }).gtag_report_conversion(waUrl)
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const gtagConvert = (window as any).gtag_report_conversion
+      if (typeof gtagConvert === 'function') gtagConvert(waUrl)
       window.open(waUrl, '_blank')
       onClose()
       setForm({ name: '', email: '', phone: '', plan: '' })
